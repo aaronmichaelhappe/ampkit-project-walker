@@ -1,0 +1,22 @@
+{
+  // "extends": "@tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "strict": true,
+    "typeRoots": ["./node_modules/@types"]
+  },
+  "include": ["src/**/*", "./**/*.ts", "Source/**/*", "trash"],
+  "exclude": ["./node_modules"],
+  "extensions": ["ts"],
+  "spec": ["**/*.spec.*"],
+  "node-option": [
+    "experimental-specifier-resolution=node",
+    "loader=ts-node/esm"
+  ]
+}

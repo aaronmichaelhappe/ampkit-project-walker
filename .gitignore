@@ -1,0 +1,8 @@
+node_modules
+catalog
+.DS_Store
+.vscode
+catalog-copy
+dist/testing-content/catalog-copy
+config.js
+dist
