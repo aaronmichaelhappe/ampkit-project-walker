@@ -1,38 +1,39 @@
 import { ampkitDirContentsInit } from './DirContents';
 import { ampkitProjectWalkerInit } from './ProjectWalker'
+import * as n from "nearley";
+import * as nodeFs from "node:fs/promises";
+import * as path from "node:path";
+import { grammar } from "./grammar";
 
-// ? add dirPath + contents.dirs.base to dirsUniqueColletion -> Map.set(dirPath+contents.dirs.get('base'))
-// ? add dirPath + contents.files to filesUniqueColletion -> Map.set(dirPath+contents.files.get('base'))
-// dirLevel = 0
-// filesStack[dirLevel].push(contents.get(files))
-// dirsStack[dirLevel].push(contents.get(dirs))
+// weirdness with nearley types and es6 modules. see README.md #/index.ts
+const nAny: any = n;
+const nearley: typeof n = nAny.default;
 
-// parse file -> dirsPath + contents.file.base
-// add returns as children in data.
-// children -> if in filesUniqueColletion, grab previous data and add file as children
-// else 
-// filesStack.push(contents.get(returnedFiles))
-// dirsStack.push(contents.get(returnedDirs))
-
-
-// while filesStack.length
-// newFile  = filesStack[dirLevel].pop()  
-// // dirHelper(dirPath, newFile)
-// while dirsStack.length
-// dirPath = dirPath + dirStack[dirLevel].pop()
-// dirLevel = dirLevel + 1;
-// dirHelper(dirtPath, defaultBase)
-// };
 const go = async () => {
-  let dirPath = './src/test-content/src';
-  let initBase = 'main.js'
-  let defaultBase = 'index.js'
+  const dirPath = './src/test-content/src';
+  const initBase = 'main.js';
+  const defaultBase = 'index.js';
 
+  console.log(grammar);
+
+
+  const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
 
   const dirHelper = ampkitDirContentsInit(dirPath, initBase);
-  const contents = await dirHelper.getContents();
+  const dirContents = await dirHelper.getContents();
 
-  const e = ampkitProjectWalkerInit(dirPath, contents.file, contents.files, contents.dir, contents.dirs);
+  const projectWalker = ampkitProjectWalkerInit(dirPath, dirContents.file, dirContents.files, dirContents.dir, dirContents.dirs);
+
+  const rootFilePath = dirContents.dir.base = dirPath + '/' + dirContents.file.base;
+
+  const fileAsString = await (await nodeFs.readFile(rootFilePath)).toString();
+
+  // this is temp solution until I have time to learn parsing more in depth. This should do for now.
+  let parsed: any;
+  const fileAsArray = fileAsString.split(/\r?\n/)
+  fileAsArray.forEach(line => {
+    parsed = parser.feed(line);
+  })
 
 }
 (() => {
