@@ -1,33 +1,26 @@
 ### Current tasks
 
-- start on v6 version.
+// ? add dirPath + contents.dirs.base to dirsUniqueColletion -> Map.set(dirPath+contents.dirs.get('base'))
+// ? add dirPath + contents.files to filesUniqueColletion -> Map.set(dirPath+contents.files.get('base'))
+// dirLevel = 0
+// filesStack[dirLevel].push(contents.get(files))
+// dirsStack[dirLevel].push(contents.get(dirs))
 
----
+// parse file -> dirsPath + contents.file.base
+// add returns as children in data.
+// children -> if in filesUniqueColletion, grab previous data and add file as children
+// else
+// filesStack.push(contents.get(returnedFiles))
+// dirsStack.push(contents.get(returnedDirs))
 
-- -- to
-- alter Happe files to get rootFile w/in method instead of on instantiation. // for better recurssion/ looping
-- grab all collections
-- match collection to current file
-- ensure server can match model
-- add b-list to components
-- grab panels
-
-- js files based on a map of files or .js ext check
-
-- grab all urls of current file (in panels? elsewhere?)
-- grab child links to components (goTos?, panels, popups?)
-
-- go through child components and repeat
-
-- go through models(match to parent, linkable to server) and -->
-- grab api/path
-- grab child collections/models
-
-# Reminders
-
-- Test from here on out.
-- Have methodical and disciplined commits.
-- Use a TODO list to help with commits and what to do next.
+// while filesStack.length
+// newFile = filesStack[dirLevel].pop()  
+// // dirHelper(dirPath, newFile)
+// while dirsStack.length
+// dirPath = dirPath + dirStack[dirLevel].pop()
+// dirLevel = dirLevel + 1;
+// dirHelper(dirtPath, defaultBase)
+// };
 
 ## TODOS
 
@@ -35,11 +28,13 @@
 
 # client techniques
 
-// import Coll from -> model
-// use this to import the model and collect info
-// url() '/api/v6...'
-// use this to match with the server model
-// ? methods with .get in them
+- js files based on a map of files or .js ext check
+- grab all urls of current file (in panels? elsewhere?)
+- grab child links to components (goTos?, panels, popups?)
+- go through child components and repeat
+- go through models(match to parent, linkable to server) and -->
+- grab api/path
+- grab child collections/models
 
 # server techniques
 

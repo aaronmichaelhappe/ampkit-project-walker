@@ -12,6 +12,8 @@
     "typeRoots": ["./node_modules/@types"]
   },
   "include": ["src/**/*", "./**/*.ts", "Source/**/*", "trash"],
+
+  "allowJs": true,
   "exclude": ["./node_modules"],
   "extensions": ["ts"],
   "spec": ["**/*.spec.*"],
