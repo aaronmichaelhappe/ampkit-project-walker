@@ -80,10 +80,5 @@ function AmpkitProjectWalkerExtender<TBase extends AmpkitProjectWalkerConstructo
       // }
 
     }
-
-    // ******************** //
-    // --- MAIN HERE --- //
-
-
   };
 }
