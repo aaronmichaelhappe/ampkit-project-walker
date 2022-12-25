@@ -2,6 +2,6 @@
 export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  modulePathIgnorePatterns: ["testing-content", "dist"]
+  modulePathIgnorePatterns: ["test-content", "dist"]
 
 };

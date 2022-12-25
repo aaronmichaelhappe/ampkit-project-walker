@@ -1,24 +1,35 @@
-{
-  // "extends": "@tsconfig/node16/tsconfig.json",
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "esModuleInterop": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "strict": true,
-    "typeRoots": ["./node_modules/@types"]
-  },
-  "include": ["src/**/*", "./**/*.ts", "Source/**/*", "trash"],
+// {
+//   // "extends": "@tsconfig/node16/tsconfig.json",
+//   "compilerOptions": {
+//     "target": "esnext",
+//     "module": "esnext",
+//     "esModuleInterop": true,
+//     "outDir": "./dist",
+//     "rootDir": "toolkit",
+//     "moduleResolution": "node",
+//     "sourceMap": true,
+//     "strict": true,
+//     "typeRoots": ["./node_modules/@types"]
+//   },
+//   "include": ["toolkit/**/*", "./**/*.ts", "Source/**/*", "trash"],
 
-  "allowJs": true,
-  "exclude": ["./node_modules"],
-  "extensions": ["ts"],
-  "spec": ["**/*.spec.*"],
-  "node-option": [
-    "experimental-specifier-resolution=node",
-    "loader=ts-node/esm"
-  ]
+//   "allowJs": true,
+//   "exclude": ["./node_modules"],
+//   "extensions": ["ts"],
+//   "spec": ["**/*.spec.*"],
+//   "node-option": [
+//     "experimental-specifier-resolution=node",
+//     "loader=ts-node/esm"
+//   ]
+// }
+
+{
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "node",
+    // "bun-types" is the important part
+    "types": ["bun-types"]
+  }
 }
