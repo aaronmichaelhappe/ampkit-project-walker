@@ -1,5 +1,7 @@
 import { readFile } from "bun";
-import { stringSplitInit } from "./ampkit-parser/string-split";
+import { StringSplitFactory } from "./ampkit-parser/string-split";
+import { Tokens } from "./ampkit-parser/tokens";
+import { tokenList } from "./ampkit-parser/token-list";
 import { ampkitDirContentsInit } from "./DirContents";
 import { ampkitProjectWalkerInit } from "./ProjectWalker";
 
@@ -15,9 +17,15 @@ let myFileNl = readFile(dirPath + initBase);
 
 export const myFile = myFileNl.replace(/\n/g, " ");
 
+let tokens = new Tokens(tokenList);
+
+const stringSplitInit = StringSplitFactory(tokens.tokensSet);
+
 const stringSplitting = stringSplitInit(myFile);
 
 const result = stringSplitting.split();
+
+console.log(result, "...result");
 
 const tokenActions = () => {};
 

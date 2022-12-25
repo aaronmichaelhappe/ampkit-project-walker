@@ -1,16 +1,9 @@
-import { Tokens } from "./tokens";
-import { tokenList } from "./token-list";
-import { tokenActions } from "./token-actions";
-
-let tokens = new Tokens(tokenList);
-
-const StringSplitFactory =
+export const StringSplitFactory =
   (tokenSet: Set<string>) => (inputString: string, tokenActions?) => {
     return new StringSplit(tokenSet, inputString, tokenActions);
   };
-export const stringSplitInit = StringSplitFactory(tokens.tokensSet);
 
-class StringSplit<T> {
+class StringSplit {
   inputString;
   tokenSet;
   tokenActions: any;
@@ -26,6 +19,7 @@ class StringSplit<T> {
     let char = "";
     let singleWS = " ";
     let matchedTokensStack = [];
+    let staticTokens = [];
     let tokens = [];
 
     const walk = () => {
@@ -47,10 +41,12 @@ class StringSplit<T> {
         let poppedToken = matchedTokensStack.pop();
 
         if (poppedToken === trimmedWord) {
+          // preform token action
+          console.log(trimmedWord, "call me...");
+          staticTokens.push(trimmedWord);
         }
         tokens.push(trimmedWord);
         word = "";
-        // this.tokenActions(poppedToken, this.inputString.splice(0, counter))
         counter = counter + 1;
         return walk();
       }
@@ -66,6 +62,6 @@ class StringSplit<T> {
       return walk();
     };
     walk();
-    return { word: word, tokens };
+    return { word: word, tokens, staticTokens };
   }
 }

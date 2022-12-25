@@ -1,15 +1,35 @@
 import { describe, expect, test } from "@jest/globals";
-import { stringSplitInit } from "./string-split";
+import { StringSplitFactory } from "./string-split";
+import { Tokens } from "./tokens";
+import { tokenList } from "./token-list";
 import { buiTokens } from "../options/index";
 
 // import { myFile } from "../index";
 
-const testStr = ` 
+const testStr = `import { LitElement, html, css } from 'lit'
+import 'bui/elements/headers'
+import 'bui/elements/hr'
+import docs from 'bui/README.md'
+import './setup'
+import './changelog'
 
-import 'cat' from '../dog'
+let docsStr = docs
+let trimIndex = docsStr.search('## 🎉 Features')
+docsStr = trimIndex > -1 ? docsStr.substr(trimIndex) : docsStr
+
+// FIXME: needs improvement
+var matches;
+while (matches = /\(\.\/(.[^\/]+)\/README\.md\)/.exec(docsStr)) {
+    docsStr = docsStr.replace(matches[0], \`(/\${matches[1]})\`)
+}
+
 `;
 
 let str = testStr.replace(/\n/g, " ");
+
+let tokens = new Tokens(tokenList);
+
+const stringSplitInit = StringSplitFactory(tokens.tokensSet);
 
 const stringSplit = stringSplitInit(str, buiTokens);
 
@@ -17,6 +37,8 @@ const result = stringSplit.split();
 
 describe("Testing Base Parser", () => {
   const typeOfResult = typeof result;
+
+  console.log(result);
 
   test("Should return an object", () => {
     expect(typeOfResult).toBe("object");
