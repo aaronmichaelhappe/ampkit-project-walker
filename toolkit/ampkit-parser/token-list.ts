@@ -1,4 +1,5 @@
 export const tokenList = [
+  //TODO: add TS tokens
   "break",
   "await",
   "case",
