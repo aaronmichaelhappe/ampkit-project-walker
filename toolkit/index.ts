@@ -1,7 +1,10 @@
+// bun is very new and in beta. but with a lot of promise. perfect for a side project not meant for production.
+// @ts-ignore
 import { readFile } from "bun";
 import { StringSplitFactory } from "./ampkit-parser/string-split";
 import { Tokens } from "./ampkit-parser/tokens";
 import { tokenList } from "./ampkit-parser/token-list";
+import { tokenActions } from "./options/token-actions";
 import { ampkitDirContentsInit } from "./DirContents";
 import { ampkitProjectWalkerInit } from "./ProjectWalker";
 
@@ -9,27 +12,22 @@ import { ampkitProjectWalkerInit } from "./ProjectWalker";
 // const dirPath = './test-content/src/';
 
 // test with bui
-const dirPath = "./test-content/bui-demo/demo/";
+
+const dirPath = "./test-content/bui-demo/demo/overview/";
 
 const initBase = "index.js";
 
-let myFileNl = readFile(dirPath + initBase);
+let myFilePre = readFile(dirPath + initBase);
 
-export const myFile = myFileNl.replace(/\n/g, " ");
+const myFile = myFilePre.replace(/\n/g, " ");
 
 let tokens = new Tokens(tokenList);
 
-const stringSplitInit = StringSplitFactory(tokens.tokensSet);
+const stringSplitInit = StringSplitFactory(tokens.tokensSet, tokenActions);
 
 const stringSplitting = stringSplitInit(myFile);
 
 const result = stringSplitting.split();
-
-console.log(result, "...result");
-
-const tokenActions = () => {};
-
-const tokenCodexCustom = {};
 
 // const dirHelper = ampkitDirContentsInit(dirPath, initBase);
 
