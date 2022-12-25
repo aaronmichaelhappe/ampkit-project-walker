@@ -1,5 +1,5 @@
 export const StringSplitFactory =
-  (tokenSet: Set<string>) => (inputString: string, tokenActions?) => {
+  (tokenSet: Set<string>, tokenActions?) => (inputString: string) => {
     return new StringSplit(tokenSet, inputString, tokenActions);
   };
 
@@ -42,8 +42,8 @@ class StringSplit {
 
         if (poppedToken === trimmedWord) {
           // preform token action
-          console.log(trimmedWord, "call me...");
           staticTokens.push(trimmedWord);
+          // this.tokenActions();
         }
         tokens.push(trimmedWord);
         word = "";
