@@ -1,7 +1,7 @@
 import { Tokens } from "./tokens";
+import { tokenList } from "./token-list";
 import { tokenActions } from "./token-actions";
 
-const tokenList = ["import"];
 let tokens = new Tokens(tokenList);
 
 const StringSplitFactory =
