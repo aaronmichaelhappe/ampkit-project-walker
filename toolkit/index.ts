@@ -1,32 +1,26 @@
 import { readFile } from "bun";
 import { stringSplitInit } from "./ampkit-parser/string-split";
-
 import { ampkitDirContentsInit } from "./DirContents";
 import { ampkitProjectWalkerInit } from "./ProjectWalker";
 
 // test with my Vue demo project
 // const dirPath = './test-content/src/';
+
 // test with bui
 const dirPath = "./test-content/bui-demo/demo/";
-// can be something like "wwww.famousfootwear.com instead of a file."
+
 const initBase = "index.js";
-const testBase = "main.js";
-// const defaultBase = 'index.js';
 
 let myFileNl = readFile(dirPath + initBase);
+
 export const myFile = myFileNl.replace(/\n/g, " ");
 
 const stringSplitting = stringSplitInit(myFile);
 
 const result = stringSplitting.split();
 
-console.log(result, "result");
-
-// loop through array.
-
-// tokens[i]
-
 const tokenActions = () => {};
+
 const tokenCodexCustom = {};
 
 // const dirHelper = ampkitDirContentsInit(dirPath, initBase);
