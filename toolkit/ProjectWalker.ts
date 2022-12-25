@@ -2,18 +2,33 @@ import * as nodePath from "path";
 
 type GConstructor<T = {}> = new (...args: any[]) => T;
 
-
 interface Contents {
-  base: string,
-  ext: string,
-  name: string,
+  base: string;
+  ext: string;
+  name: string;
 }
 
-export const AmpkitProjectWalkerFactory = (nodePath: any) => (dirPath: string, file: Contents, files: Contents[], dir: Contents, dirs: Contents[]) => {
-  const AmpkitProjectWalkerExtended = AmpkitProjectWalkerExtender(AmpkitProjectWalker);
+export const AmpkitProjectWalkerFactory =
+  (nodePath: any) =>
+  (
+    dirPath: string,
+    file: Contents,
+    files: Contents[],
+    dir: Contents,
+    dirs: Contents[]
+  ) => {
+    const AmpkitProjectWalkerExtended =
+      AmpkitProjectWalkerExtender(AmpkitProjectWalker);
 
-  return new AmpkitProjectWalkerExtended(nodePath, dirPath, file, files, dir, dirs);
-};
+    return new AmpkitProjectWalkerExtended(
+      nodePath,
+      dirPath,
+      file,
+      files,
+      dir,
+      dirs
+    );
+  };
 
 export let ampkitProjectWalkerInit = AmpkitProjectWalkerFactory(nodePath);
 
@@ -29,7 +44,14 @@ class AmpkitProjectWalker {
   dirLevel = 0;
   filesStack: string[][];
   dirsStack: string[][];
-  constructor(nodeFs: any, dirPath: string, file: Contents, files: Contents[], dir: Contents, dirs: Contents[]) {
+  constructor(
+    nodeFs: any,
+    dirPath: string,
+    file: Contents,
+    files: Contents[],
+    dir: Contents,
+    dirs: Contents[]
+  ) {
     this.nodeFs = nodeFs;
     this.dirPath = dirPath;
     this.file = file;
@@ -45,19 +67,19 @@ class AmpkitProjectWalker {
   get readdir() {
     return this.nodeFs.readdir;
   }
-  go() { }
-
+  go() {}
 }
 
 type AmpkitProjectWalkerConstructor = GConstructor<AmpkitProjectWalker>;
 
-function AmpkitProjectWalkerExtender<TBase extends AmpkitProjectWalkerConstructor>(Base: TBase) {
+function AmpkitProjectWalkerExtender<
+  TBase extends AmpkitProjectWalkerConstructor
+>(Base: TBase) {
   return class AmpkitProjectWalkerDataMixin extends Base {
     constructor(...args: any[]) {
       super(...args);
     }
     go(): void {
-
       // --- MAIN HERE --- //
       // ******************** //
 
@@ -78,7 +100,6 @@ function AmpkitProjectWalkerExtender<TBase extends AmpkitProjectWalkerConstructo
       //   this.filesUniqueColletion.set(filesKey, this.file);
       //   this.filesStack[this.dirLevel].push(filesKey);
       // }
-
     }
   };
 }

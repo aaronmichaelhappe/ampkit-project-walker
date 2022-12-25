@@ -1,7 +1,7 @@
 import { serve, file } from "bun";
 
 import * as nodeFs from "node:fs/promises";
-import "../toolkit/index"
+import "../toolkit/index";
 
 serve({
   fetch(req: Request) {
@@ -9,4 +9,3 @@ serve({
   },
   port: 3000,
 });
-

@@ -1,12 +1,11 @@
-import { describe, expect, test } from '@jest/globals';
-import { Tokens } from './tokens';
+import { describe, expect, test } from "@jest/globals";
+import { Tokens } from "./tokens";
 
-const tokenList = ['import'];
+const tokenList = ["import"];
 let tokens = new Tokens(tokenList);
 
-describe('Testing tokens class', () => {
-
-  test('Should return an object', () => {
-    expect('').toBe('');
+describe("Testing tokens class", () => {
+  test("Should return an object", () => {
+    expect("").toBe("");
   });
 });

@@ -1,12 +1,13 @@
-import { Tokens } from './tokens';
-import { tokenActions } from './token-actions';
+import { Tokens } from "./tokens";
+import { tokenActions } from "./token-actions";
 
-const tokenList = ['import']
+const tokenList = ["import"];
 let tokens = new Tokens(tokenList);
 
-const StringSplitFactory = (tokenSet: Set<string>) => (inputString: string, tokenActions?) => {
-  return new StringSplit(tokenSet, inputString, tokenActions);
-};
+const StringSplitFactory =
+  (tokenSet: Set<string>) => (inputString: string, tokenActions?) => {
+    return new StringSplit(tokenSet, inputString, tokenActions);
+  };
 export const stringSplitInit = StringSplitFactory(tokens.tokensSet);
 
 class StringSplit<T> {
@@ -21,9 +22,9 @@ class StringSplit<T> {
   }
   split() {
     let counter = 0;
-    let word = '';
-    let char = '';
-    let singleWS = ' '
+    let word = "";
+    let char = "";
+    let singleWS = " ";
     let matchedTokensStack = [];
     let tokens = [];
 
@@ -36,7 +37,7 @@ class StringSplit<T> {
       word = word + char;
 
       if (word === singleWS) {
-        word = '';
+        word = "";
         counter = counter + 1;
         return walk();
       }
@@ -48,7 +49,7 @@ class StringSplit<T> {
         if (poppedToken === trimmedWord) {
         }
         tokens.push(trimmedWord);
-        word = '';
+        word = "";
         // this.tokenActions(poppedToken, this.inputString.splice(0, counter))
         counter = counter + 1;
         return walk();
@@ -63,7 +64,7 @@ class StringSplit<T> {
 
       counter = counter + 1;
       return walk();
-    }
+    };
     walk();
     return { word: word, tokens };
   }
