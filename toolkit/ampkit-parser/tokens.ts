@@ -15,18 +15,18 @@ export class Tokens {
         token.properties !== undefined ? token.properties : {}
       )
     );
-    this.craeteTokenSets();
+    this.createTokenSets();
   }
-  craeteTokenSets() {
+  createTokenSets() {
     this.tokens.forEach((token, key) => this.tokensSet.add(key));
   }
   // add 3rd party tokens
-  addTokens(tokens: [] | Map<string, any>) {
+  addTokens(tokens: string[] | Map<string, any>) {
     if (Array.isArray(tokens)) {
       this.createTokens(tokens);
     } else {
       tokens.forEach((token, key) => this.tokens.set(key, token));
-      this.craeteTokenSets();
+      this.createTokenSets();
     }
   }
 }
