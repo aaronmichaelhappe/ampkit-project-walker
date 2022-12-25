@@ -23,7 +23,7 @@ class StringSplit<T> {
     let counter = 0;
     let word = '';
     let char = '';
-    let singleWS = ' ';
+    let singleWS = ' '
     let matchedTokensStack = [];
     let tokens = [];
 
