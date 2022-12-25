@@ -8,6 +8,7 @@ const testStr = `
 
 import 'cat' from '../dog'
 `;
+
 let str = testStr.replace(/\n/g, " ");
 
 const stringSplit = stringSplitInit(str, buiTokens);
