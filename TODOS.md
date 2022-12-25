@@ -1,40 +1,69 @@
 ### Current tasks
 
-// ? add dirPath + contents.dirs.base to dirsUniqueColletion -> Map.set(dirPath+contents.dirs.get('base'))
-// ? add dirPath + contents.files to filesUniqueColletion -> Map.set(dirPath+contents.files.get('base'))
-// dirLevel = 0
-// filesStack[dirLevel].push(contents.get(files))
-// dirsStack[dirLevel].push(contents.get(dirs))
+// if client, parse (.js ext, match model/server relationships.) -> get imported files, add to stack. pop from stack. repeat.
 
-// parse file -> dirsPath + contents.file.base
-// add returns as children in data.
-// children -> if in filesUniqueColletion, grab previous data and add file as children
-// else
-// filesStack.push(contents.get(returnedFiles))
-// dirsStack.push(contents.get(returnedDirs))
+// if server. go through all files. forEach -> parse. match to client to get data needed. fetch data. 
+indexes = [
+  'home', 'about', 'animals'
+];
 
-// while filesStack.length
-// newFile = filesStack[dirLevel].pop()  
-// // dirHelper(dirPath, newFile)
-// while dirsStack.length
-// dirPath = dirPath + dirStack[dirLevel].pop()
-// dirLevel = dirLevel + 1;
-// dirHelper(dirtPath, defaultBase)
-// };
+coonst models = ['Dogs', 'Cats']
+const CatsModel = {
+  id: '123123',
+}
 
-## TODOS
-
-- Is eslint even properly set up? check into this. I rushed it.
+const animalsClient = {
+  url: 'animals/',
+  components: [
+    //
+    component: {
+      name: 'DogsComp',
+      // construct custom url. -> 'animals/DogsComp'
+      relatedPages: [{name: 'humans', url: 'humans/'}, {name: 'vet', url: 'humans/vet'}],
+      model: {
+        // coutom url. -> 'model/dogsModel'
+        name: 'DogsModel',
+        table: 'dogs',
+        data: {
+          id: '',
+        }
+        relatedId: '123123',
+        relatedModel: new Map('CatsModel' CatsModel) // an actual reference
+        relatedTable: 'Cats',
+        relatedModel: 'CatsModel'
+      }
+    }
+  ]
+}
 
 # client techniques
 
-- js files based on a map of files or .js ext check
-- grab all urls of current file (in panels? elsewhere?)
-- grab child links to components (goTos?, panels, popups?)
-- go through child components and repeat
-- go through models(match to parent, linkable to server) and -->
-- grab api/path
-- grab child collections/models
+SECTIONS:  jsModule (has top level imports etc) -> (sub section of jsModule) -> class/classComponent, css(sub section), html(subSection).
+
+- first parse grabs "words" which can be used for tokens. can put into sections -> jsFile, class/classComponent, css, html.
+-- second parse separate into functions/methods. and if/while etc statements. maybe further into assignements expressions (refresh on definitions and particularities of these. )
+- grab all imports. seperate out what I need. ignore rest. 
+- construct links from routers/tabs and goTos and Panels etc. 
+- grab all model properties being used to see what is *actually* being used from models. 
+cats -> propeties, links, models, importedChildren, componentChildren, imported jsOther.
+
+* home -> cats -> dogs -> vets
+* | 
+* about -> contact
+
+// client links map
+* cats -> dogs -> vets
+* | 
+* friendlyCats -> friendlyDogs -> vets
+
+// client to models map
+* cats -> dogs -> vets
+* | 
+* Cats -> Dogs
+* |
+* SmallCats
+
+// Models Map etc. 
 
 # server techniques
 
