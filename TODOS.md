@@ -2,6 +2,7 @@
 
 // TODO: test different scenarios for Map, Set, etc. or performance 
 // TODO: come up with better plan/understanding of when to use Map, Set, arrays, objects.
+// TODO: I am writing with classes, and functions and Construtor functions inside. Determine a consistent way. 
 
 // if client, parse (.js ext, match model/server relationships.) -> get imported files, add to stack. pop from stack. repeat.
 
