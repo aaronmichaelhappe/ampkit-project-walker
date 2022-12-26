@@ -1,5 +1,5 @@
 ### Current tasks
-
+// TODO: remname all files the same, next. sometimes they are camel and sometimes dash. just do dash as most files are named this. 
 // TODO: test different scenarios for Map, Set, etc. or performance 
 // TODO: come up with better plan/understanding of when to use Map, Set, arrays, objects.
 // TODO: I am writing with classes, and functions and Construtor functions inside. Determine a consistent way. 
