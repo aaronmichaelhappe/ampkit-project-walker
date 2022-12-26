@@ -1,15 +1,16 @@
 import { describe, expect, test } from "@jest/globals";
-import { tokenActions } from "./token-actions";
+import { ImportStatementActions } from "./token-actions";
 
-const ts = ["import", "let"];
-let mapped;
+let importFunc = new ImportStatementActions();
 
-mapped = ts.map((t) => {
-  return tokenActions(t);
-});
+let result = importFunc.doAction("import");
 
 describe("Temp test", () => {
   test("Should return an object", () => {
-    expect(1).toBe(1);
+    expect(typeof result.token).toBe("string");
+  });
+  test("Should return the string passed in when string doesn't match", () => {
+    result = importFunc.doAction("example");
+    expect(result.token).toBe("example");
   });
 });

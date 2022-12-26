@@ -42,5 +42,4 @@ export const go = (
     }
   });
   return tokens;
-  // return tokenActions;
 };

@@ -5,7 +5,9 @@ import { tokens, words } from "./index";
 
 describe("Testing Base Parser", () => {
   const result = go(words, tokens.tokensSet, tokenActions);
-
+  // test("test placeholder", () => {
+  //   expect(1).toBe(1);
+  // });
   test("result should be an array", () => {
     expect(Array.isArray(result)).toBe(true);
   });
