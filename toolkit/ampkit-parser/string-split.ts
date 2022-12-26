@@ -17,7 +17,8 @@ class StringSplit {
     let counter = 0;
     let word = "";
     let char = "";
-    let singleWS = " ";
+    let ws = " ";
+    // TODO could be just a string. I think I was imaginging multipes, but consider just a string
     let matchedTokensStack = [];
     let staticTokens = [];
     let tokens = [];
@@ -30,13 +31,13 @@ class StringSplit {
       char = this.inputString[counter];
       word = word + char;
 
-      if (word === singleWS) {
+      if (word === ws) {
         word = "";
         counter = counter + 1;
         return walk();
       }
 
-      if (word[word.length - 1] === singleWS) {
+      if (word[word.length - 1] === ws) {
         let trimmedWord = word.trimEnd();
         let poppedToken = matchedTokensStack.pop();
 

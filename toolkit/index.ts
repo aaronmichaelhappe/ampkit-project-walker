@@ -1,7 +1,7 @@
 // bun is very new and in beta. but with a lot of promise. perfect for a side project not meant for production.
 // @ts-ignore
 import { readFile } from "bun";
-import { StringSplitFactory } from "./ampkit-parser/string-split";
+// import { StringSplitFactory } from "./ampkit-parser/string-split";
 import { Tokens } from "./ampkit-parser/tokens";
 import { tokenList } from "./ampkit-parser/token-list";
 import { tokenActions } from "./options/token-actions";
@@ -19,15 +19,43 @@ const initBase = "index.js";
 
 let myFilePre = readFile(dirPath + initBase);
 
-const myFile = myFilePre.replace(/\n/g, " ");
+const myFile = myFilePre.replace(/([\n\s]+)/g, " ");
+
+// var startTime = performance.now();
+
+const words = myFile.split(" ");
 
 let tokens = new Tokens(tokenList);
 
-const stringSplitInit = StringSplitFactory(tokens.tokensSet, tokenActions);
+const staticTokens = [];
+const matchedActions = [];
 
-const stringSplitting = stringSplitInit(myFile);
+words.forEach((word) => {
+  // tokenActions(word)
+  if (tokens.tokensSet.has(word)) {
+    staticTokens.push(word);
+    let result = tokenActions(word);
+    if (result !== undefined) {
+      matchedActions.push(result);
+    }
+  }
+});
 
-const result = stringSplitting.split();
+// var endTime = performance.now();
+
+// console.log(`Call to doSomething took ${endTime - startTime} milliseconds`);
+
+// var startTime = performance.now();
+
+// const stringSplitInit = StringSplitFactory(tokens.tokensSet, tokenActions);
+
+// const stringSplitting = stringSplitInit(myFile);
+
+// const result = stringSplitting.split();
+
+// var endTime = performance.now();
+
+// console.log(`Call to doSomething took ${endTime - startTime} milliseconds`);
 
 // const dirHelper = ampkitDirContentsInit(dirPath, initBase);
 
