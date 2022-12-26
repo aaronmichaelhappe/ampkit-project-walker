@@ -1,10 +1,12 @@
 // bun is very new and in beta. but with a lot of promise. perfect for a side project not meant for production.
 // @ts-ignore
-import { readFile } from "bun";
+// import { readFile } from "bun";
 // import { StringSplitFactory } from "./ampkit-parser/string-split";
 import { Tokens } from "./ampkit-parser/tokens";
 import { tokenList } from "./ampkit-parser/token-list";
 import { tokenActions } from "./options/token-actions";
+import { go as firstGroupingGo } from "./firstGrouping";
+import { data } from "../test-content/data";
 import { ampkitDirContentsInit } from "./DirContents";
 import { ampkitProjectWalkerInit } from "./ProjectWalker";
 
@@ -17,52 +19,20 @@ const dirPath = "./test-content/bui-demo/demo/overview/";
 
 const initBase = "index.js";
 
-let myFilePre = readFile(dirPath + initBase);
+// let myFilePre = readFile(dirPath + initBase);
+let myFilePre = data;
+// use test content instead, because of unknown error with bun readFile as import
+myFilePre = data;
 
 myFilePre = `import hey yo`;
 
 const myFile = myFilePre.replace(/([\n\s]+)/g, " ");
 
-// var startTime = performance.now();
+export const words = myFile.split(" ");
 
-const words = myFile.split(" ");
+export let tokens = new Tokens(tokenList);
 
-let tokens = new Tokens(tokenList);
-
-type MatcherFunction = {
-  doAction: <T>(word: string) => { token: string; terminate: boolean };
-};
-
-type MatchedTokenData = {
-  token: string;
-  terminate: boolean;
-};
-
-const staticTokens = [];
-let collectedResults = [];
-let result: MatchedTokenData;
-let matchingFunction: MatcherFunction;
-let matchInitialized = false;
-
-words.forEach((word) => {
-  if (tokens.tokensSet.has(word)) {
-    staticTokens.push(word);
-  }
-  if (matchInitialized === false) {
-    matchingFunction = tokenActions(word);
-
-    if (matchingFunction !== undefined) {
-      result = matchingFunction?.doAction(word);
-      collectedResults.push(result?.token);
-      matchInitialized = true;
-    }
-  } else if (matchInitialized === true) {
-    result = matchingFunction?.doAction(word);
-    collectedResults.push(result?.token);
-  }
-});
-
-// var endTime = performance.now();
+firstGroupingGo(words, tokens, tokenActions);
 
 // console.log(`Call to doSomething took ${endTime - startTime} milliseconds`);
 
