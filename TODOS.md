@@ -1,5 +1,8 @@
 ### Current tasks
 
+// TODO: test different scenarios for Map, Set, etc. or performance 
+// TODO: come up with better plan/understanding of when to use Map, Set, arrays, objects.
+
 // if client, parse (.js ext, match model/server relationships.) -> get imported files, add to stack. pop from stack. repeat.
 
 // if server. go through all files. forEach -> parse. match to client to get data needed. fetch data. 
