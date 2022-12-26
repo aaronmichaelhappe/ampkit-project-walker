@@ -19,6 +19,8 @@ const initBase = "index.js";
 
 let myFilePre = readFile(dirPath + initBase);
 
+myFilePre = `import hey yo`;
+
 const myFile = myFilePre.replace(/([\n\s]+)/g, " ");
 
 // var startTime = performance.now();
@@ -27,17 +29,36 @@ const words = myFile.split(" ");
 
 let tokens = new Tokens(tokenList);
 
+type MatcherFunction = {
+  doAction: <T>(word: string) => { token: string; terminate: boolean };
+};
+
+type MatchedTokenData = {
+  token: string;
+  terminate: boolean;
+};
+
 const staticTokens = [];
-const matchedActions = [];
+let collectedResults = [];
+let result: MatchedTokenData;
+let matchingFunction: MatcherFunction;
+let matchInitialized = false;
 
 words.forEach((word) => {
-  // tokenActions(word)
   if (tokens.tokensSet.has(word)) {
     staticTokens.push(word);
-    let result = tokenActions(word);
-    if (result !== undefined) {
-      matchedActions.push(result);
+  }
+  if (matchInitialized === false) {
+    matchingFunction = tokenActions(word);
+
+    if (matchingFunction !== undefined) {
+      result = matchingFunction?.doAction(word);
+      collectedResults.push(result?.token);
+      matchInitialized = true;
     }
+  } else if (matchInitialized === true) {
+    result = matchingFunction?.doAction(word);
+    collectedResults.push(result?.token);
   }
 });
 

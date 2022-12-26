@@ -1,48 +1,60 @@
-export const tokenActions = (token, collectedTokens?, walkedString?) => {
-  const importActions = () => {
-    const terminators = new Set();
-    // const concurrent = new Set();
-    terminators.add("import");
-    // terminators.add(';')
-    //'import', 'customElement.define', 'class', 'const'
-    if (terminators.has(token)) {
-      // TODO: left off here.
-      return true;
-    }
-    // add collected tokens back to import;
-
-    // else if () {
-
-    // }
-  };
-  const buiCustomElementActions = () => {};
-
-  let trackingCurrently = null;
-  let trackingQueue = ["func2", "func3", "func4"];
-  let trackingQueReplacement = [];
-
-  if (trackingCurrently !== null) {
-    trackingCurrently();
-    if (trackingQueue.length) {
-      // tracking.current();
-      const deQueue = () => {
-        trackingQueue = trackingQueue.reverse();
-        const next = trackingQueue.pop();
-        // next.func();
-        trackingQueReplacement.push(next);
-        if (trackingQueue.length) {
-          deQueue();
+export const tokenActions = (initToken, matchUnknownToken?) => {
+  function ImportActionsConstructor() {
+    let hasBeenMatched = 1;
+    this.doAction = function (token) {
+      let result = { token: token, terminate: false };
+      const matchImportedItem = () => {
+        if (token === "*") {
+          result.token = "*";
         } else {
-          trackingQueue = trackingQueReplacement;
-          trackingQueReplacement = [];
-          return { trackingQueue, trackingQueReplacement };
+          //const result.token = matchUknownToken(token);
+          result.token = token;
         }
       };
-      deQueue();
-    }
-  } else {
-    if (token === "import") {
-      return importActions();
-    }
+      const matchPath = function () {};
+      // type MatcherFunction = typeof matchImportedItem | typeof matchPath;
+      const doMatch = () => {
+        const matchActionsString =
+          typeof matchActions[hasBeenMatched] === "string"
+            ? matchActions[hasBeenMatched]
+            : null;
+        const matchActionsFunc =
+          typeof matchActions[hasBeenMatched] !== "string"
+            ? matchActions[hasBeenMatched]
+            : null;
+        if (matchActionsString) {
+          if (matchActionsString === token) {
+            result.token = token;
+          } else {
+            //const result.token = matchUknownToken(token);
+            result.token = token;
+          }
+        } else {
+          console.log(matchActions[hasBeenMatched], "match actions");
+          matchActionsFunc[hasBeenMatched]();
+        }
+      };
+      const terminators = new Set<string>();
+      terminators.add(";");
+
+      let matchActions = ["import", matchImportedItem, "from", matchPath];
+
+      if (terminators.has(token)) {
+        result = { token: token, terminate: true };
+      }
+
+      doMatch();
+
+      hasBeenMatched = hasBeenMatched + 1;
+      return result;
+    };
+  }
+
+  if (initToken === "import") {
+    return new ImportActionsConstructor();
   }
 };
+
+// make class
+
+// call it and pass in token. if a match, return new object and keep using it?
