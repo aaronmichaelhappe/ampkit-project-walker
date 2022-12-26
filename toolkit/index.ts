@@ -5,10 +5,10 @@
 import { Tokens } from "./ampkit-parser/tokens";
 import { tokenList } from "./ampkit-parser/token-list";
 import { tokenActions } from "./options/token-actions";
-import { go as firstGroupingGo } from "./firstGrouping";
+import { go as firstGroupingGo } from "./first-grouping";
 import { data } from "../test-content/data";
-import { ampkitDirContentsInit } from "./DirContents";
-import { ampkitProjectWalkerInit } from "./ProjectWalker";
+import { ampkitDirContentsInit } from "./dir-contents";
+import { ampkitProjectWalkerInit } from "./project-walker";
 
 // test with my Vue demo project
 // const dirPath = './test-content/src/';

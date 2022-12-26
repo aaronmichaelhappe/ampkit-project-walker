@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { go } from "./firstGrouping";
+import { go } from "./first-grouping";
 import { tokenActions } from "./options/token-actions";
 import { tokens, words } from "./index";
 
