@@ -24,7 +24,7 @@ let myFilePre = data;
 // use test content instead, because of unknown error with bun readFile as import
 myFilePre = data;
 
-myFilePre = `import hey yo`;
+myFilePre = `import cat`;
 
 const myFile = myFilePre.replace(/([\n\s]+)/g, " ");
 

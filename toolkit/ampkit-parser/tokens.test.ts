@@ -28,5 +28,4 @@ describe("Testing tokens class", () => {
   test("customTokens Array of strings should be added to the Set", () => {
     expect(tokens.tokensSet.has("asdf")).toBe(true);
   });
-  // TODO: Tests -> adding with a map
 });

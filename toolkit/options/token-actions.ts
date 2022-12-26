@@ -7,67 +7,70 @@ export type MatcherFunction = {
   doAction: TokenAction;
 };
 
-export type TokenAction = (token: string) => MatchedTokenData;
-
-export type MatchedTokenData = {
-  token: string;
-  terminate: boolean;
-};
+export type TokenAction = (token: string) => any;
 
 export let ImportStatementActions = function ImportStatementActions() {
-  let hasBeenMatched = 1;
+  let hasBeenMatched = 0;
   this.doAction = function (token) {
-    let result: MatchedTokenData = { token: token, terminate: false };
+    let result: string;
+    let results = {
+      result,
+      failed: false,
+      terminate: false,
+      line: "import-statement",
+      section: "module",
+    };
     const matchImportedItem = () => {
       if (token === "*") {
-        result.token = "*";
+        results.result = "*";
       } else {
         //const result.token = matchUknownToken(token);
-        result.token = token;
+        results.terminate = true;
+        results.failed = true;
       }
     };
-    const matchPath = function () {};
+    const matchPath = function () {
+      // possible failure here.
+      // result.failed = true;
+    };
     // type MatcherFunction = typeof matchImportedItem | typeof matchPath;
-    const doMatch = () => {
-      const matchActionsString =
-        typeof matchActions[hasBeenMatched] === "string"
-          ? matchActions[hasBeenMatched]
-          : null;
-      const matchActionsFunc =
-        typeof matchActions[hasBeenMatched] !== "string"
-          ? matchActions[hasBeenMatched]
-          : null;
-      if (matchActionsString) {
-        if (matchActionsString === token) {
-          result.token = token;
-        } else {
-          //const result.token = matchUknownToken(token);
-          result.token = token;
-        }
-      } else {
-        matchActions[hasBeenMatched];
-        // TODO: bug here
-        // matchActionsFunc[hasBeenMatched]();
-      }
+    const matchMethods = {
+      matchImportedItem: matchImportedItem,
+      matchPath: matchPath,
     };
+
+    let matchActions = ["import", "matchImportedItem", "from", "matchPath"];
+
     const terminators = new Set<string>();
     terminators.add(";");
-
-    let matchActions = ["import", matchImportedItem, "from", matchPath];
-
+    //
+    // STEP: #1
     if (terminators.has(token)) {
-      result = { token: token, terminate: true };
+      results.terminate = true;
     }
 
+    // calls matchMethods() => matchImportedItem, matchPath... etc.
+    const doMatch = () => {
+      if (matchActions[hasBeenMatched] === token) {
+        results.result = token;
+      } else if (matchMethods[matchActions[hasBeenMatched]] !== undefined) {
+        //const result.token = matchUknownToken(token);
+        const matchMethod = matchMethods[matchActions[hasBeenMatched]];
+        matchMethod();
+        results.result = token;
+      }
+    };
+    //
+    // STEP: #2
     doMatch();
-
     hasBeenMatched = hasBeenMatched + 1;
-    return result;
+
+    return results;
   };
 };
 
 export const tokenActions: TokenActions = (initToken, matchUnknownToken?) => {
-  // TODO: Add tpye for this. I forget how to do this with a constructor.
+  // TODO: Add type for this. I forget how to do this with a constructor.
   let ImportStatementActionsConstructor = ImportStatementActions;
 
   if (initToken === "import") {
