@@ -1,8 +1,25 @@
-export const tokenActions = (initToken, matchUnknownToken?) => {
+export type TokenActions = (
+  initToken: string,
+  matchUnknownToken?: any
+) => MatcherFunction;
+
+export type MatcherFunction = {
+  doAction: TokenAction;
+};
+
+export type TokenAction = (token: string) => MatchedTokenData;
+
+export type MatchedTokenData = {
+  token: string;
+  terminate: boolean;
+};
+
+export const tokenActions: TokenActions = (initToken, matchUnknownToken?) => {
+  // TODO: Add tpye for this. I forget how to do this with a constructor.
   function ImportActionsConstructor() {
     let hasBeenMatched = 1;
     this.doAction = function (token) {
-      let result = { token: token, terminate: false };
+      let result: MatchedTokenData = { token: token, terminate: false };
       const matchImportedItem = () => {
         if (token === "*") {
           result.token = "*";
@@ -30,8 +47,9 @@ export const tokenActions = (initToken, matchUnknownToken?) => {
             result.token = token;
           }
         } else {
-          console.log(matchActions[hasBeenMatched], "match actions");
-          matchActionsFunc[hasBeenMatched]();
+          matchActions[hasBeenMatched];
+          // TODO: bug here
+          // matchActionsFunc[hasBeenMatched]();
         }
       };
       const terminators = new Set<string>();
