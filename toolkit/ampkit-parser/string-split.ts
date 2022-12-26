@@ -17,10 +17,8 @@ class StringSplit {
     let counter = 0;
     let word = "";
     let char = "";
-    let ws = " ";
-    // TODO could be just a string. I think I was imaginging multipes, but consider just a string
+    // TODO: could be just a string. I think I was imaginging multipes, but consider just a string
     let matchedTokensStack = [];
-    let staticTokens = [];
     let tokens = [];
 
     const walk = () => {
@@ -31,28 +29,31 @@ class StringSplit {
       char = this.inputString[counter];
       word = word + char;
 
-      if (word === ws) {
-        word = "";
-        counter = counter + 1;
-        return walk();
-      }
+      // if (word === ws) {
+      //   word = "";
+      //   counter = counter + 1;
+      //   return walk();
+      // }
 
-      if (word[word.length - 1] === ws) {
-        let trimmedWord = word.trimEnd();
-        let poppedToken = matchedTokensStack.pop();
+      // if (word[word.length - 1] === ws) {
+      //   let trimmedWord = word.trimEnd();
+      //   let poppedToken = matchedTokensStack.pop();
 
-        if (poppedToken === trimmedWord) {
-          // preform token action
-          staticTokens.push(trimmedWord);
-          // this.tokenActions();
-        }
-        tokens.push(trimmedWord);
-        word = "";
-        counter = counter + 1;
-        return walk();
-      }
+      //   if (poppedToken === trimmedWord) {
+      //     // preform token action
+      //     staticTokens.push(trimmedWord);
+      //     // this.tokenActions();
+      //   }
+      //   tokens.push(trimmedWord);
+      //   word = "";
+      //   counter = counter + 1;
+      //   return walk();
+      // }
 
-      // don't reset word because next iteration is to determine if word matches token
+      // TODO: recycle this class
+      // instead maybe use this class to analyze each char in each word
+      // ie --> customElements.define('b-file-manager',
+      // or --> ['asdf','']
       if (this.tokenSet.has(word)) {
         matchedTokensStack.push(word);
         counter = counter + 1;
@@ -63,6 +64,6 @@ class StringSplit {
       return walk();
     };
     walk();
-    return { word: word, tokens, staticTokens };
+    return { word: word, tokens };
   }
 }
