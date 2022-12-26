@@ -10,6 +10,6 @@ mapped = ts.map((t) => {
 
 describe("Temp test", () => {
   test("Should return an object", () => {
-    expect(mapped[0]).toBe(true);
+    expect(1).toBe(1);
   });
 });

@@ -32,7 +32,7 @@ export const words = myFile.split(" ");
 
 export let tokens = new Tokens(tokenList);
 
-firstGroupingGo(words, tokens, tokenActions);
+firstGroupingGo(words, tokens.tokensSet, tokenActions);
 
 // console.log(`Call to doSomething took ${endTime - startTime} milliseconds`);
 
