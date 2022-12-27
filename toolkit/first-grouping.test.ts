@@ -8,10 +8,17 @@ describe("Testing Base Parser", () => {
   // test("test placeholder", () => {
   //   expect(1).toBe(1);
   // });
+
+  test("test temp", () => {
+    expect(words[0]).toBe("import");
+  });
+
+  //
   test("result should be an array", () => {
+    console.log(result);
     expect(Array.isArray(result)).toBe(true);
   });
   test("first array index.token should be a string.", () => {
-    expect(typeof result[0].token).toBe("string");
+    expect(typeof result[0].result).toBe("string");
   });
 });

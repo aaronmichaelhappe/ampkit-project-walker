@@ -46,7 +46,7 @@ export const go = (
         }
         return result;
       }
-    } else if (matchInitialized === true) {
+    } else {
       result = matchingFunction?.doAction(word);
       part.value = [...part.value, result?.result];
       if (result?.terminate) {
