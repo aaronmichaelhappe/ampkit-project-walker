@@ -4,8 +4,8 @@
 // import { StringSplitFactory } from "./ampkit-parser/string-split";
 import { Tokens } from "./ampkit-parser/tokens";
 import { tokenList } from "./ampkit-parser/token-list";
-import { tokenActions } from "./options/token-actions";
-import { go as firstGroupingGo } from "./first-grouping";
+// import { tokenActions } from "./options/token-actions";
+// import { go as firstGroupingGo } from "./first-grouping";
 import { data } from "../test-content/data";
 import { ampkitDirContentsInit } from "./dir-contents";
 import { ampkitProjectWalkerInit } from "./project-walker";
@@ -24,7 +24,7 @@ let myFilePre = data;
 // use test content instead, because of unknown error with bun readFile as import
 myFilePre = data;
 
-myFilePre = `dog cat`;
+myFilePre = `import cat ;`;
 
 const myFile = myFilePre.replace(/([\n\s]+)/g, " ");
 
@@ -32,7 +32,7 @@ export const words = myFile.split(" ");
 
 export let tokens = new Tokens(tokenList);
 
-firstGroupingGo(words, tokens.tokensSet, tokenActions);
+// firstGroupingGo(words, tokens.tokensSet, tokenActions);
 
 // console.log(`Call to doSomething took ${endTime - startTime} milliseconds`);
 
