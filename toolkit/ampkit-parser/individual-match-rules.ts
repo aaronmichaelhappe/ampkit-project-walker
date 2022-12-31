@@ -1,40 +1,60 @@
 // group -- individual match Rules
-type RuleMatcherObj = {
-  matcher: string | RegExp[];
+export type RuleMatcherObj = {
+  matcher: string | (() => RegExp);
   stateTrigger: string;
+  collectPart?: boolean;
+  partTitle?: string;
 };
 
-type RuleObj = {
-  name: string;
+export type RuleObj = {
+  matcherTitle: string;
   matchSequence: RuleMatcherObj[][];
 };
-type RulesArray = RuleObj[];
-const groupMatchRules: RulesArray = [
+
+export type RulesArray = RuleObj[];
+
+export const matchRules: RulesArray = [
   {
-    name: "module",
+    matcherTitle: "module",
+    matchSequence: [
+      [
+        {
+          matcher: "import",
+          stateTrigger: "green",
+          collectPart: true,
+          partTitle: "import",
+        },
+        {
+          matcher: "*",
+          stateTrigger: "green",
+          collectPart: true,
+          partTitle: "*",
+        },
+      ],
+      [{ matcher: () => /let|const|var/, stateTrigger: "" }],
+    ],
+  },
+];
+
+// export const groupMatchRulesMap = new Map(
+//   groupMatchRules.map((obj) => [obj.matcherTitle, obj])
+// );
+
+export const partMatchRules: RulesArray = [
+  {
+    matcherTitle: "import",
     matchSequence: [
       [
         { matcher: "import", stateTrigger: "blue" },
-        { matcher: [/let|const|var/], stateTrigger: "yellow" },
+        { matcher: "*", stateTrigger: "blue" },
       ],
     ],
   },
 ];
 
-export const groupMatchRulesMap = new Map(
-  groupMatchRules.map((obj) => [obj.name, obj])
-);
-
-const partMatchRules = [
-  {
-    name: "import",
-    matchSequence: [[{ matcher: ["import"], stateTrigger: "blue" }], [{}]],
-  },
-];
-
-export const partMatchRulesMap = new Map(
-  partMatchRules.map((obj) => [obj.name, obj])
-);
+// export const partMatchRulesMap = new Map(
+//   partMatchRules.map((obj) => [obj.name, obj])
+// );
 
 // part -- individual match Rules
 
