@@ -107,17 +107,13 @@ export const ParseByGroupAndParts = function (
     currentMatch: CurrentMatch;
   };
 
-  let toBeMatched = {
-    matcherTitle: "",
-  };
-
-  let state: MatchStates = "";
+  let titleToBeMatched = "";
 
   const self = {
     words: words,
     getMatchRules: () => {
       let index = counters.word === 0 ? 0 : counters.rules;
-      toBeMatched.matcherTitle = matchRules[index].matcherTitle;
+      titleToBeMatched = matchRules[index].matcherTitle;
       return matchRules[index];
     },
     iterateMatchSequence: (matchRules: RuleObj): any => {
@@ -160,13 +156,8 @@ export const ParseByGroupAndParts = function (
           return self.handleOrangeState();
         case "yellow":
         default:
-          break;
-
-          break;
+          return { currentMatch: currentMatch, results: results, counters };
       }
-    },
-    setStateTracker: (newTrackers) => {
-      toBeMatched = newTrackers;
     },
     setCounters: (newCounters) => {
       counters = newCounters;
@@ -213,7 +204,7 @@ export const ParseByGroupAndParts = function (
     },
     // completely matched. go to the next word (increase its counter). reset all rules counters.
     handleGreenState: (matchHandlers) => {
-      const groupName = (currentMatch.groupName = toBeMatched.matcherTitle);
+      const groupName = (currentMatch.groupName = titleToBeMatched);
 
       if (matchHandlers?.collectPart === true) {
         currentMatch.partsName = matchHandlers.partTitle;

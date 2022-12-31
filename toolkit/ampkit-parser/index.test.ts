@@ -47,11 +47,11 @@ let state: string = "init";
 
 let results;
 
-// while (state !== "red" && state !== "") {
-rules = parseByGroupAndParts.getMatchRules();
-state = parseByGroupAndParts.iterateMatchSequence(rules);
-results = parseByGroupAndParts.handleState(state);
-// }
+while (state !== "red" && state !== "") {
+  rules = parseByGroupAndParts.getMatchRules();
+  state = parseByGroupAndParts.iterateMatchSequence(rules);
+  results = parseByGroupAndParts.handleState(state);
+}
 
 describe("Testing ParseByGroupAndParts Index", () => {
   test("returns within while: getMatchRules is object, iterateMatchSequence is state, handleState is results ", () => {
