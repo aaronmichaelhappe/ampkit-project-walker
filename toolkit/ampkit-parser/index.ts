@@ -55,6 +55,39 @@ type Results = {
   };
 };
 
+const resultsCounters = {
+  module: 0,
+  html: 0,
+  css: 0,
+};
+
+var validator = {
+  get(target, key) {
+    if (typeof target[key] === "object" && target[key] !== null) {
+      return new Proxy(target[key], validator);
+    } else {
+      return target[key];
+    }
+  },
+  set(target, key, value) {
+    console.log(target);
+    console.log(key);
+    console.log(value);
+    return true;
+  },
+};
+
+var person = {
+  firstName: "alfred",
+  lastName: "john",
+  inner: {
+    salary: 8250,
+    Proffesion: ".NET Developer",
+  },
+};
+var proxy = new Proxy(person, validator);
+proxy.inner.salary = "foo";
+
 export const ParseByGroupAndParts = function (
   words: string[],
   matchRules: RulesArray
@@ -168,11 +201,11 @@ export const ParseByGroupAndParts = function (
       counters.rules = 0;
     },
     incrementResultsGroupTotalMatches: (groupName) => {
-      results.counters[groupName] = results.counters[groupName] + 1;
+      resultsCounters[groupName] = resultsCounters[groupName] + 1;
     },
     spreadResultsGroupTotalMatchs: (groupName) => {
-      results[groupName].matches[results.counters[groupName]] = [
-        ...results[groupName].matches[results.counters[groupName]],
+      results[groupName].matches[resultsCounters[groupName]] = [
+        ...results[groupName].matches[resultsCounters[groupName]],
         words[counters.word],
       ];
     },
@@ -182,10 +215,8 @@ export const ParseByGroupAndParts = function (
         : results[groupName].index;
     },
     spreadResultsCurrentMatches: (groupName, matcherIndex) => {
-      results[groupName].matches[results.counters[groupName]][matcherIndex] = [
-        ...results[groupName].matches[results.counters[groupName]][
-          matcherIndex
-        ],
+      results[groupName].matches[resultsCounters[groupName]][matcherIndex] = [
+        ...results[groupName].matches[resultsCounters[groupName]][matcherIndex],
         words[counters.word],
       ];
     },
@@ -228,7 +259,7 @@ export const ParseByGroupAndParts = function (
     handleBlueState: (matchHandlers) => {
       counters.sameMatchGroup = counters.sameMatchGroup + 1;
 
-      const groupName = currentMatch.groupName;
+      const groupName = (currentMatch.groupName = titleToBeMatched);
 
       let matcherIndex = self.incrementResultsCurrentMatches(groupName);
 
