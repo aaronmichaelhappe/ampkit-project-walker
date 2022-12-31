@@ -28,19 +28,6 @@ const words = ["import"];
 
 const parseByGroupAndParts = ParseByGroupAndParts(words, matchRules);
 
-let counters = {
-  word: 0,
-  matchers: 0,
-  matcher: 0,
-  rules: 0,
-};
-
-let stateTracker = {
-  type: "",
-  name: "",
-  state: "",
-};
-
 let rules: RuleObj;
 
 let state: string = "init";
