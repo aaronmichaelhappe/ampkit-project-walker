@@ -29,22 +29,8 @@ type Counters = {
   rules: number;
 };
 
-type ResultsCounters = {
-  module: number;
-  html: number;
-  css: number;
-};
-
-type ResultsGroup = {
-  index: number;
-  matches: string[][];
-};
-
 type Results = {
-  module: ResultsGroup;
-  html: ResultsGroup;
-  css: ResultsGroup;
-  ordered?: ResultsGroup;
+  [key: string]: string;
 };
 
 var validator = {
@@ -56,9 +42,6 @@ var validator = {
     }
   },
   set(target, key, value) {
-    console.log(target);
-    console.log(key);
-    console.log(value);
     return true;
   },
 };
@@ -85,30 +68,9 @@ export const ParseByGroupAndParts = function (
     rules: 0,
   };
 
-  let results: Results | {} = {
-    // module: {
-    //   index: 0,
-    //   matches: [[]],
-    // },
-    // html: {
-    //   index: 0,
-    //   matches: [[]],
-    // },
-    // css: {
-    //   index: 0,
-    //   matches: [[]],
-    // },
-    // ordered: {
-    //   index: 0,
-    //   matches: [[]],
-    // },
-  };
+  let results: Results | {} = {};
 
-  const resultsCounters = {
-    module: 0,
-    html: 0,
-    css: 0,
-  };
+  const resultsCounters: Results | {} = {};
 
   let currentMatch: CurrentMatch = {
     groupName: "",
@@ -143,9 +105,24 @@ export const ParseByGroupAndParts = function (
       titleToBeMatched = matchRules[wordsIndex].matcherTitle;
       return matchRules[wordsIndex];
     },
-    createResultsGroupsAndCounters: (groups: string[], counter) => {
-      groups[counter];
-      if (counter < groups.length) counter = counter + 1;
+    createResultsGroupsAndCounters: (
+      groups: string[],
+      counter,
+      returnReltObjs?
+    ) => {
+      let done;
+      results[groups[counter] + "Index"] = 0;
+      results[groups[counter] + "Matches"] = [[]];
+      resultsCounters[groups[counter]] = 0;
+      if (counter < groups.length - 1) {
+        counter = counter + 1;
+        done = self.createResultsGroupsAndCounters(
+          groups,
+          counter,
+          returnReltObjs
+        );
+      }
+      if (returnReltObjs) return { results, resultsCounters };
     },
     iterateMatchSequence: (matchRules: RuleObj): any => {
       const matchSequence = matchRules.matchSequence;
