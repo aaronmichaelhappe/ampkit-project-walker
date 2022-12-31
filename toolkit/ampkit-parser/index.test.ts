@@ -6,24 +6,6 @@ import {
   type RulesArray,
 } from "./individual-match-rules";
 
-type RuleMatcherObj = {
-  matcher: string | (() => RegExp);
-  stateTrigger: string;
-  collectPart?: boolean;
-  partTitle?: string;
-};
-
-type StateHandler = {
-  func: (matchRules: RuleMatcherObj) => {};
-  rules: RulesArray;
-};
-
-type ReturnOpts = {
-  func: (matchRules: RuleObj) => {};
-  state: string;
-  rules: RuleObj;
-};
-
 const words = ["import"];
 
 const parseByGroupAndParts = ParseByGroupAndParts(words, matchRules);

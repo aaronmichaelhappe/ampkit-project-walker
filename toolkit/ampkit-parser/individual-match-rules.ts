@@ -42,8 +42,3 @@ export const matchRules: RulesArray = [
 export const matchRulesMap = new Map(
   matchRules.map((obj) => [obj.matcherTitle, obj])
 );
-
-// part -- individual match Rules
-
-// either -- individual match Rules
-// export const allMatchRules = [{}];
