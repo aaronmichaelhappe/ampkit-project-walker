@@ -170,21 +170,24 @@ export const ParseByGroupAndParts = function (
     incrementResultsGroupTotalMatches: (groupName) => {
       results.counters[groupName] = results.counters[groupName] + 1;
     },
-    pushResultsGroupTotalMatchs: (groupName) => {
-      console.log(groupName);
-      // results[groupName].matches[results.counters[groupName]].push(
-      //   words[counters.word]
-      // );
+    spreadResultsGroupTotalMatchs: (groupName) => {
+      results[groupName].matches[results.counters[groupName]] = [
+        ...results[groupName].matches[results.counters[groupName]],
+        words[counters.word],
+      ];
     },
-    incrementReultsCurrentMatches: (groupName) => {
+    incrementResultsCurrentMatches: (groupName) => {
       counters.sameMatchGroup === 0
         ? results[groupName].index + 1
         : results[groupName].index;
     },
-    pushReultsCurrentMatches: (groupName, matcherIndex) => {
-      results[groupName].matches[results.counters[groupName]][
-        matcherIndex
-      ].push(counters.word);
+    spreadResultsCurrentMatches: (groupName, matcherIndex) => {
+      results[groupName].matches[results.counters[groupName]][matcherIndex] = [
+        ...results[groupName].matches[results.counters[groupName]][
+          matcherIndex
+        ],
+        words[counters.word],
+      ];
     },
     incrementDiffMatchs: () => {},
     incrementSameMatchGroup: () => {},
@@ -209,9 +212,9 @@ export const ParseByGroupAndParts = function (
       if (matchHandlers?.collectPart === true) {
         currentMatch.partsName = matchHandlers.partTitle;
 
-        currentMatch.parts.push(words[counters.word]);
+        currentMatch.parts = [...currentMatch.parts, words[counters.word]];
 
-        self.pushResultsGroupTotalMatchs(groupName);
+        self.spreadResultsGroupTotalMatchs(groupName);
 
         self.incrementResultsGroupTotalMatches(groupName);
       }
@@ -227,9 +230,9 @@ export const ParseByGroupAndParts = function (
 
       const groupName = currentMatch.groupName;
 
-      let matcherIndex = self.incrementReultsCurrentMatches(groupName);
+      let matcherIndex = self.incrementResultsCurrentMatches(groupName);
 
-      self.pushReultsCurrentMatches(groupName, matcherIndex);
+      self.spreadResultsCurrentMatches(groupName, matcherIndex);
 
       return { currentMatch: currentMatch, results: results, counters };
     },
