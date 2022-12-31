@@ -1,9 +1,10 @@
 // group -- individual match Rules
 export type RuleMatcherObj = {
   matcher: string | (() => RegExp);
-  stateTrigger: string;
-  collectPart?: boolean;
   partTitle?: string;
+  stateTrigger: string;
+  collectPart: boolean;
+  completeMatch: boolean;
 };
 
 export type RuleObj = {
@@ -20,41 +21,27 @@ export const matchRules: RulesArray = [
       [
         {
           matcher: "import",
+          partTitle: "import",
           stateTrigger: "green",
           collectPart: true,
-          partTitle: "import",
+          completeMatch: true,
         },
         {
           matcher: "*",
+          partTitle: "*",
           stateTrigger: "green",
           collectPart: true,
-          partTitle: "*",
+          completeMatch: true,
         },
       ],
-      [{ matcher: () => /let|const|var/, stateTrigger: "" }],
+      // [{ matcher: () => /let|const|var/, stateTrigger: "" }],
     ],
   },
 ];
 
-// export const groupMatchRulesMap = new Map(
-//   groupMatchRules.map((obj) => [obj.matcherTitle, obj])
-// );
-
-export const partMatchRules: RulesArray = [
-  {
-    matcherTitle: "import",
-    matchSequence: [
-      [
-        { matcher: "import", stateTrigger: "blue" },
-        { matcher: "*", stateTrigger: "blue" },
-      ],
-    ],
-  },
-];
-
-// export const partMatchRulesMap = new Map(
-//   partMatchRules.map((obj) => [obj.name, obj])
-// );
+export const matchRulesMap = new Map(
+  matchRules.map((obj) => [obj.matcherTitle, obj])
+);
 
 // part -- individual match Rules
 

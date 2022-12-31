@@ -95,7 +95,6 @@ export const ParseByGroupAndParts = function (
     partsName: "",
     parts: [],
   };
-
   // if there is a partial match
   let nextMatch: CurrentMatch = {
     groupName: "",
@@ -110,7 +109,6 @@ export const ParseByGroupAndParts = function (
 
   let toBeMatched = {
     matcherTitle: "",
-    matcherIndex: 0,
   };
 
   let state: MatchStates = "";
@@ -119,12 +117,11 @@ export const ParseByGroupAndParts = function (
     words: words,
     getMatchRules: () => {
       let index = counters.word === 0 ? 0 : counters.rules;
+      toBeMatched.matcherTitle = matchRules[index].matcherTitle;
       return matchRules[index];
     },
     iterateMatchSequence: (matchRules: RuleObj): any => {
       const matchSequence = matchRules.matchSequence;
-
-      matchSequence;
 
       if (words[counters.word] === undefined) return "";
 
@@ -157,6 +154,8 @@ export const ParseByGroupAndParts = function (
           return self.handleRedState(matchHandlers);
         case "green":
           return self.handleGreenState(matchHandlers);
+        case "blue":
+          return self.handleBlueState(matchHandlers);
         case "orange":
           return self.handleOrangeState();
         case "yellow":
