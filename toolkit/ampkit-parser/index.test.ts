@@ -17,7 +17,7 @@ let state: string = "init";
 let results;
 
 while (state !== "red" && state !== "") {
-  rules = parseByGroupAndParts.getMatchRules();
+  rules = parseByGroupAndParts.go();
   state = parseByGroupAndParts.iterateMatchSequence(rules);
   results = parseByGroupAndParts.handleState(state);
 }

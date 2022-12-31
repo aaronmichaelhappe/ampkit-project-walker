@@ -35,30 +35,16 @@ type ResultsCounters = {
   css: number;
 };
 
-type Results = {
-  counters: ResultsCounters;
-  module: {
-    index: number;
-    matches: string[][];
-  };
-  html: {
-    index: number;
-    matches: string[][];
-  };
-  css: {
-    index: number;
-    matches: string[][];
-  };
-  ordered: {
-    index: number;
-    matches: string[][];
-  };
+type ResultsGroup = {
+  index: number;
+  matches: string[][];
 };
 
-const resultsCounters = {
-  module: 0,
-  html: 0,
-  css: 0,
+type Results = {
+  module: ResultsGroup;
+  html: ResultsGroup;
+  css: ResultsGroup;
+  ordered?: ResultsGroup;
 };
 
 var validator = {
@@ -99,28 +85,29 @@ export const ParseByGroupAndParts = function (
     rules: 0,
   };
 
-  let results: Results = {
-    counters: {
-      module: 0,
-      html: 0,
-      css: 0,
-    },
-    module: {
-      index: 0,
-      matches: [[]],
-    },
-    html: {
-      index: 0,
-      matches: [[]],
-    },
-    css: {
-      index: 0,
-      matches: [[]],
-    },
-    ordered: {
-      index: 0,
-      matches: [[]],
-    },
+  let results: Results | {} = {
+    // module: {
+    //   index: 0,
+    //   matches: [[]],
+    // },
+    // html: {
+    //   index: 0,
+    //   matches: [[]],
+    // },
+    // css: {
+    //   index: 0,
+    //   matches: [[]],
+    // },
+    // ordered: {
+    //   index: 0,
+    //   matches: [[]],
+    // },
+  };
+
+  const resultsCounters = {
+    module: 0,
+    html: 0,
+    css: 0,
   };
 
   let currentMatch: CurrentMatch = {
@@ -144,10 +131,21 @@ export const ParseByGroupAndParts = function (
 
   const self = {
     words: words,
-    getMatchRules: () => {
-      let index = counters.word === 0 ? 0 : counters.rules;
-      titleToBeMatched = matchRules[index].matcherTitle;
-      return matchRules[index];
+
+    go: () => {
+      let resultsCounter = 0;
+
+      let tempGroups = ["module", "css", "html"];
+
+      self.createResultsGroupsAndCounters(tempGroups, resultsCounter);
+
+      let wordsIndex = counters.word === 0 ? 0 : counters.rules;
+      titleToBeMatched = matchRules[wordsIndex].matcherTitle;
+      return matchRules[wordsIndex];
+    },
+    createResultsGroupsAndCounters: (groups: string[], counter) => {
+      groups[counter];
+      if (counter < groups.length) counter = counter + 1;
     },
     iterateMatchSequence: (matchRules: RuleObj): any => {
       const matchSequence = matchRules.matchSequence;
