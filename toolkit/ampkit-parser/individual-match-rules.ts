@@ -5,6 +5,7 @@ export type RuleMatcherObj = {
   stateTrigger: string;
   collectPart: boolean;
   completeMatch: boolean;
+  testStrings?: string[];
 };
 
 export type RuleObj = {
@@ -21,18 +22,26 @@ export const matchRules: RulesArray = [
       [
         {
           matcher: "import",
-          partTitle: "import",
+          partTitle: "import keyword",
           stateTrigger: "blue",
           collectPart: true,
           completeMatch: true,
         },
-        // {
-        //   matcher: "*",
-        //   partTitle: "*",
-        //   stateTrigger: "green",
-        //   collectPart: true,
-        //   completeMatch: true,
-        // },
+        {
+          matcher: () => /\*|\{.+\}/g,
+          partTitle: "imported",
+          stateTrigger: "blue",
+          collectPart: true,
+          completeMatch: true,
+          testStrings: ["*"],
+        },
+        {
+          matcher: "example",
+          partTitle: "example",
+          stateTrigger: "green",
+          collectPart: true,
+          completeMatch: true,
+        },
       ],
       // [{ matcher: () => /let|const|var/, stateTrigger: "" }],
     ],

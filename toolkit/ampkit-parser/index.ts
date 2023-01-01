@@ -33,34 +33,11 @@ type Results = {
   [key: string]: string;
 };
 
-var validator = {
-  get(target, key) {
-    if (typeof target[key] === "object" && target[key] !== null) {
-      return new Proxy(target[key], validator);
-    } else {
-      return target[key];
-    }
-  },
-  set(target, key, value) {
-    return true;
-  },
-};
-
-var person = {
-  firstName: "alfred",
-  lastName: "john",
-  inner: {
-    salary: 8250,
-    Proffesion: ".NET Developer",
-  },
-};
-var proxy = new Proxy(person, validator);
-proxy.inner.salary = "foo";
-
 export const ParseByGroupAndParts = function (
   words: string[],
   matchRules: RulesArray
 ) {
+  let testing = false;
   let counters: Counters = {
     word: 0,
     diffMatchGroup: 0,
@@ -70,7 +47,19 @@ export const ParseByGroupAndParts = function (
 
   let results: Results | {} = {};
 
-  const resultsCounters: Results | {} = {};
+  let resultsCounters: Results | {} = {};
+
+  const resultsCountersProxyHandler = {
+    get(target, prop, receiver) {
+      console.log(target[prop]);
+      return target[prop];
+    },
+  };
+
+  const resultsCounterProxy = new Proxy(
+    resultsCounters,
+    resultsCountersProxyHandler
+  );
 
   let currentMatch: CurrentMatch = {
     groupName: "",
@@ -94,40 +83,42 @@ export const ParseByGroupAndParts = function (
   const self = {
     words: words,
 
-    go: () => {
+    init: () => {
+      if (testing) {
+        resultsCounters = resultsCounterProxy;
+      }
+
       let resultsCounter = 0;
 
       let tempGroups = ["module", "css", "html"];
 
       self.createResultsGroupsAndCounters(tempGroups, resultsCounter);
-
+    },
+    go: () => {
       let wordsIndex = counters.word === 0 ? 0 : counters.rules;
+
       titleToBeMatched = matchRules[wordsIndex].matcherTitle;
+
       return matchRules[wordsIndex];
     },
     createResultsGroupsAndCounters: (
       groups: string[],
       counter,
-      returnReltObjs?
+      returnResults?
     ) => {
-      let done;
-      results[groups[counter] + "Index"] = 0;
-      results[groups[counter] + "Matches"] = [[]];
+      results[groups[counter]] = [];
       resultsCounters[groups[counter]] = 0;
       if (counter < groups.length - 1) {
         counter = counter + 1;
-        done = self.createResultsGroupsAndCounters(
-          groups,
-          counter,
-          returnReltObjs
-        );
+        self.createResultsGroupsAndCounters(groups, counter, returnResults);
       }
-      if (returnReltObjs) return { results, resultsCounters };
+      if (returnResults) return { results, resultsCounters };
     },
     iterateMatchSequence: (matchRules: RuleObj): any => {
       const matchSequence = matchRules.matchSequence;
 
-      if (words[counters.word] === undefined) return "";
+      if (words[counters.word] === undefined)
+        return { currentMatch, results, counters, resultsCounters };
 
       const matchHandlers =
         matchSequence[counters.diffMatchGroup][counters.sameMatchGroup];
@@ -139,18 +130,23 @@ export const ParseByGroupAndParts = function (
         return self.handleState("red", matchHandlers);
 
       if (typeof matchHandlers.matcher === "string") {
-        if (words[counters.word] === matchHandlers.matcher) {
-          self.handleState(matchHandlers.stateTrigger, matchHandlers);
-
-          return matchHandlers.stateTrigger;
-        } else {
-          self.handleState("orange");
-
-          return matchHandlers.stateTrigger;
-        }
+        return words[counters.word] === matchHandlers.matcher
+          ? self.handleState(matchHandlers.stateTrigger, matchHandlers)
+          : self.handleState("orange");
+        // if (words[counters.word] === matchHandlers.matcher) {
+        //   return self.handleState(matchHandlers.stateTrigger, matchHandlers);
+        // } else {
+        //   return self.handleState("orange");
+        // }
+      } else {
+        const re = matchHandlers.matcher();
+        const match = words[counters.word].match(re);
+        return match.length
+          ? self.handleState(matchHandlers.stateTrigger, matchHandlers)
+          : self.handleState("orange");
       }
 
-      return "";
+      // return { currentMatch, results, counters, resultsCounters };
     },
     handleState: (color, matchHandlers?: RuleMatcherObj) => {
       switch (color) {
@@ -164,7 +160,7 @@ export const ParseByGroupAndParts = function (
           return self.handleOrangeState();
         case "yellow":
         default:
-          return { currentMatch: currentMatch, results: results, counters };
+          return { currentMatch, results, counters, resultsCounters };
       }
     },
     setCounters: (newCounters) => {
@@ -178,38 +174,36 @@ export const ParseByGroupAndParts = function (
     incrementResultsGroupTotalMatches: (groupName) => {
       resultsCounters[groupName] = resultsCounters[groupName] + 1;
     },
-    spreadResultsGroupTotalMatchs: (groupName) => {
-      results[groupName].matches[resultsCounters[groupName]] = [
-        ...results[groupName].matches[resultsCounters[groupName]],
-        words[counters.word],
-      ];
+    spreadResultsGroupTotalMatchs: (groupName, returnResults?) => {
+      results[groupName][resultsCounters[groupName]] = currentMatch.parts;
+      self.incrementResultsGroupTotalMatches(groupName);
+      if (returnResults) return results[groupName];
     },
-    incrementResultsCurrentMatches: (groupName) => {
-      counters.sameMatchGroup === 0
-        ? results[groupName].index + 1
-        : results[groupName].index;
+    incrementDiffMatchesCount: () => {
+      counters.diffMatchGroup = counters.diffMatchGroup + 1;
     },
-    spreadResultsCurrentMatches: (groupName, matcherIndex) => {
-      results[groupName].matches[resultsCounters[groupName]][matcherIndex] = [
-        ...results[groupName].matches[resultsCounters[groupName]][matcherIndex],
-        words[counters.word],
-      ];
+    incrementSameMatchGroupCount: () => {
+      counters.sameMatchGroup = counters.sameMatchGroup + 1;
     },
-    incrementDiffMatchs: () => {},
-    incrementSameMatchGroup: () => {},
+    incrementRulesCount: () => {},
+    incrementRulesTotalMatchesCount: () => {},
+    incrementWordCount: () => {
+      counters.word = counters.word + 1;
+    },
+
     // fail. increase word counter to go to the next. But don't add the word to anything. Results all counters
     handleRedState: (matchHandlers) => {
-      counters.word = counters.word + 1;
+      self.incrementWordCount();
       self.resetRulesCounters();
 
-      return { currentMatch: currentMatch, results: results, counters };
+      return { currentMatch, results, counters, resultsCounters };
     },
     // match group has failed. go to a different match group (increase its counter). and start over (0 out sameMatchGroup)
     handleOrangeState: () => {
-      counters.diffMatchGroup = counters.diffMatchGroup + 1;
+      self.incrementDiffMatchesCount();
       counters.sameMatchGroup = 0;
 
-      return { currentMatch: currentMatch, results: results, counters };
+      return { currentMatch, results, counters, resultsCounters };
     },
     // completely matched. go to the next word (increase its counter). reset all rules counters.
     handleGreenState: (matchHandlers) => {
@@ -221,26 +215,25 @@ export const ParseByGroupAndParts = function (
         currentMatch.parts = [...currentMatch.parts, words[counters.word]];
 
         self.spreadResultsGroupTotalMatchs(groupName);
-
-        self.incrementResultsGroupTotalMatches(groupName);
       }
 
-      counters.word = counters.word + 1;
+      self.incrementWordCount();
       self.resetRulesCounters();
 
-      return { currentMatch: currentMatch, results: results, counters };
+      return { currentMatch, results, counters, resultsCounters };
     },
     // matched but keep going in the same match group (increase its counter) to match more.
     handleBlueState: (matchHandlers) => {
-      counters.sameMatchGroup = counters.sameMatchGroup + 1;
+      currentMatch.groupName = titleToBeMatched;
 
-      const groupName = (currentMatch.groupName = titleToBeMatched);
+      currentMatch.parts = [...currentMatch.parts, words[counters.word]];
 
-      let matcherIndex = self.incrementResultsCurrentMatches(groupName);
+      self.incrementSameMatchGroupCount();
+      counters.diffMatchGroup = 0;
 
-      self.spreadResultsCurrentMatches(groupName, matcherIndex);
+      self.incrementWordCount();
 
-      return { currentMatch: currentMatch, results: results, counters };
+      return { currentMatch, results, counters, resultsCounters };
     },
   };
 
