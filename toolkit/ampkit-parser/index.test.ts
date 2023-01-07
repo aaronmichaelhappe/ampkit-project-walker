@@ -53,19 +53,24 @@ describe("Testing ParseByGroupAndParts.checkMatch", () => {
   });
 });
 
-describe("test test test", () => {
+describe("Testing ParseByGroupAndParts.go", () => {
   const words = ["import", "'thing'", ";"];
   const parseByGroupAndParts = ParseByGroupAndParts(words, matchRulesCodex);
 
   // ADD loop next
+  let complete;
+  let counter = 0;
+  let results;
+  while (complete !== true) {
+    counter = counter + 1;
+    results = parseByGroupAndParts.go();
+    complete = results.complete;
+  }
 
-  const results = parseByGroupAndParts.go();
-
-  const results2 = parseByGroupAndParts.go();
-
-  const results3 = parseByGroupAndParts.go();
-
-  test("should return true to indicate the string as been matched", () => {
-    expect(1).toBe(1);
+  test("should return correct types on the results", () => {
+    expect(Array.isArray(results.allResults.module)).toBe(true);
+    expect(typeof results.currentMatch.groupName).toBe("string");
+    expect(typeof results.currentMatch.partsName).toBe("string");
+    expect(Array.isArray(results.currentMatch.parts)).toBe(true);
   });
 });

@@ -18,7 +18,7 @@ export type AllResults = {
 
 export type ReturnData = {
   allResults;
-  state;
+  complete;
   wordCounter;
   currentMatch;
 };
@@ -40,7 +40,9 @@ export const ParseByGroupAndParts = function (
   let wordCounter = 0;
 
   // determine end success or fail
-  let state: "success" | "fail" | "" = "";
+  // TODO, I didnt do this right. just using success current to determine when to end loop
+  // look into how to determine a fail, if at all.
+  let complete: boolean;
 
   let currentMatch: CurrentMatch = {
     groupName: "",
@@ -58,7 +60,7 @@ export const ParseByGroupAndParts = function (
 
   let returnData: ReturnData = {
     allResults,
-    state,
+    complete,
     wordCounter,
     currentMatch,
   };
@@ -101,7 +103,7 @@ export const ParseByGroupAndParts = function (
     ruleCounter,
     caughtSemiColon,
     wordCounter,
-    state,
+    complete,
     // determine end success or fail
 
     // init: () => {
@@ -132,10 +134,9 @@ export const ParseByGroupAndParts = function (
       currentWord = words[wordCounter];
 
       // if we are out of words
-      if (currentWord === undefined) {
-        state = matchRulesCodex[ruleCounter] === undefined ? "success" : "fail";
-        returnData.state = state;
 
+      if (currentWord === undefined) {
+        returnData.complete = true;
         return returnData;
       }
       // remove semi colons
@@ -163,7 +164,10 @@ export const ParseByGroupAndParts = function (
 
       currentMatch.parts = [...currentMatch.parts, currentWord];
 
-      let str = `${currentMatch.str} ${currentWord}`;
+      let str =
+        currentMatch.str !== ""
+          ? `${currentMatch.str} ${currentWord}`
+          : currentWord;
       currentMatch.str = str;
 
       hasMatched = hasMatched ? true : self.match(str);
@@ -177,6 +181,7 @@ export const ParseByGroupAndParts = function (
           currentMatch.groupName = currentGroupName =
             matchRulesCodex[ruleCounter].groupName;
         }
+        currentMatch.partsName = matchRulesCodex[ruleCounter].name;
         // if we have terminators, keep them so we can remove them from next match, or add them to next match
         if (currentMatch.terminator) {
           previousMatch = currentMatch;
@@ -206,7 +211,7 @@ export const ParseByGroupAndParts = function (
 
       returnData = {
         allResults,
-        state,
+        complete,
         wordCounter,
         currentMatch,
       };
@@ -223,8 +228,9 @@ export const ParseByGroupAndParts = function (
       if (localMatch) return true;
 
       ruleCounter = ruleCounter + 1;
+
       if (matchRulesCodex[ruleCounter] === undefined) {
-        return false;
+        if (words[wordCounter + 1]) return false;
       } else {
         return self.match(str);
       }
