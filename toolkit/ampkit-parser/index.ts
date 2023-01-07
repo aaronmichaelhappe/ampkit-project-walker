@@ -134,7 +134,6 @@ export const ParseByGroupAndParts = function (
       currentWord = words[wordCounter];
 
       // if we are out of words
-
       if (currentWord === undefined) {
         returnData.complete = true;
         return returnData;
@@ -168,6 +167,7 @@ export const ParseByGroupAndParts = function (
         currentMatch.str !== ""
           ? `${currentMatch.str} ${currentWord}`
           : currentWord;
+
       currentMatch.str = str;
 
       hasMatched = hasMatched ? true : self.match(str);
@@ -184,6 +184,18 @@ export const ParseByGroupAndParts = function (
         currentMatch.partsName = matchRulesCodex[ruleCounter].name;
         // if we have terminators, keep them so we can remove them from next match, or add them to next match
         if (currentMatch.terminator) {
+          currentMatch.parts;
+          const slicedOffTerminator = [
+            ...currentMatch.parts.splice(
+              currentMatch.parts.length - 1,
+              currentMatch.parts.length
+            ),
+          ];
+          const replacedStr = currentMatch.str.replace(
+            slicedOffTerminator[0],
+            ""
+          );
+          currentMatch.str = replacedStr.trim();
           previousMatch = currentMatch;
         }
 
@@ -237,11 +249,11 @@ export const ParseByGroupAndParts = function (
     },
     performMatch: (matcher, val, part): boolean => {
       if (matcher && matcher[0] === "/") {
-        return self.performRegExMatch(matcher, val, part);
+        return self.regExMatch(matcher, val, part);
       }
-      return self.performSimpleMatch(matcher, val, part);
+      return self.simpleMatch(matcher, val, part);
     },
-    performSimpleMatch: (matcher, val, part): boolean => {
+    simpleMatch: (matcher, val, part): boolean => {
       const strMatched = matcher === val;
       if (strMatched) {
         if (currentTerminatorMatchers.length) {
@@ -252,7 +264,7 @@ export const ParseByGroupAndParts = function (
         return false;
       }
     },
-    performRegExMatch: (matcher, val, part): boolean => {
+    regExMatch: (matcher, val, part): boolean => {
       const re = new RegExp(matcher.slice(1, matcher.length - 1));
 
       const strMatched = re.test(val);
@@ -265,13 +277,25 @@ export const ParseByGroupAndParts = function (
         return false;
       }
     },
-    matchTerminator: (part): boolean => {
+    matchTerminator: (part, testRuleCounter?): boolean => {
+      // override to test a particular rule
+      if (testRuleCounter) {
+        ruleCounter = testRuleCounter;
+      }
       const terminatorMatchers =
         matchRulesCodex[ruleCounter].terminatorMatchers;
 
       let partMatch = false;
       for (let index = 0; index < terminatorMatchers.length; index++) {
         const terminator = terminatorMatchers[index];
+        if (terminator[0] === "^") {
+          const re = /terminator/;
+          if (re.test(part)) {
+            currentMatch.terminator = terminator.slice(1, terminator.length);
+            partMatch = true;
+            break;
+          }
+        }
         if (terminator === part) {
           currentMatch.terminator = terminator;
           partMatch = true;

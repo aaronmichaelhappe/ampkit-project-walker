@@ -32,14 +32,9 @@ const myFile = myFilePre.replace(/([\n\s]+)/g, " ");
 
 export const words = myFile.split(" ");
 
-console.log("words");
-console.log(words);
-
 const parseByGroupAndParts = ParseByGroupAndParts(words, matchRulesCodex);
 
 const results = parseByGroupAndParts.go();
-console.log("results");
-console.log(results);
 
 // export let tokens = new Tokens(tokenList);
 

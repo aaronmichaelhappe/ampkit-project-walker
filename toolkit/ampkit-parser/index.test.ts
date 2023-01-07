@@ -44,7 +44,7 @@ describe("Testing ParseByGroupAndParts.checkMatch", () => {
   const words = ["import", "'example'", ";"];
   const parseByGroupAndParts = ParseByGroupAndParts(words, matchRulesCodex);
 
-  let str = `${words[0]} ${words[1]}`;
+  let str = `${words[0]} ${words[1]} ;`;
 
   const matched = parseByGroupAndParts.match(str);
 
@@ -53,16 +53,16 @@ describe("Testing ParseByGroupAndParts.checkMatch", () => {
   });
 });
 
-describe("Testing ParseByGroupAndParts.go", () => {
-  const words = ["import", "'thing'", ";"];
+describe("Testing ParseByGroupAndParts.go and using a while loop for multi matches", () => {
+  const words = ["import", "'thing'", "import", "cat", "from", "dog", ";"];
   const parseByGroupAndParts = ParseByGroupAndParts(words, matchRulesCodex);
 
   // ADD loop next
   let complete;
-  let counter = 0;
+  // let counter = 0;
   let results;
   while (complete !== true) {
-    counter = counter + 1;
+    // counter = counter + 1;
     results = parseByGroupAndParts.go();
     complete = results.complete;
   }

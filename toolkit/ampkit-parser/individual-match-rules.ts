@@ -10,7 +10,11 @@ export const commonTerminatorsGlobal = [
   "if",
   "do",
   "while",
+  "class",
+  "export",
+  "module",
 ];
+export const customTerminatorsGlobal = ["customElements.define"];
 export const commonTerminatorsClass = ["public", "private", "static"];
 
 export type MatchRule = {
@@ -23,17 +27,28 @@ export type MatchRule = {
 
 export const importMatchRule: MatchRule = {
   name: "import",
-  terminatorMatchers: [";", ...commonTerminatorsGlobal],
-  mainMatcher: "/^import(\\s)(['\\\"].+['\\\"]|\\*|\\{[.+]\\})(\\s?)(;?)/",
+  terminatorMatchers: [
+    ";",
+    ...commonTerminatorsGlobal,
+    ...customTerminatorsGlobal,
+  ],
+  mainMatcher:
+    "/^import(\\s)(.+?)(\\s?)(;|import|let|const|var|customElements.define)/",
   groupMatcher: true,
   groupName: "module",
 };
+
 export const importExampleRule: MatchRule = {
   name: "example",
   terminatorMatchers: [";", ...commonTerminatorsGlobal],
-  mainMatcher: "/example(\\s);/",
+  mainMatcher: '/example(\\s\\");/',
   groupMatcher: true,
   groupName: "module",
 };
 
 export const matchRules: MatchRule[] = [importMatchRule, importExampleRule];
+
+export const regexes = {
+  importMatchRule:
+    /^import(\s)(.+?)(\s?)(;|import|let|const|var|customElements.define)/,
+};
