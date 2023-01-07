@@ -41,12 +41,12 @@ describe("Testing ParseByGroupAndParts.matchTerminator", () => {
 });
 
 describe("Testing ParseByGroupAndParts.checkMatch", () => {
-  const words = ["import", "'thing'", ";"];
+  const words = ["import", "'example'", ";"];
   const parseByGroupAndParts = ParseByGroupAndParts(words, matchRulesCodex);
 
   let str = `${words[0]} ${words[1]}`;
 
-  const matched = parseByGroupAndParts.checkMatch(str);
+  const matched = parseByGroupAndParts.match(str);
 
   test("should return true to indicate the string as been matched", () => {
     expect(matched).toBe(true);
@@ -54,11 +54,16 @@ describe("Testing ParseByGroupAndParts.checkMatch", () => {
 });
 
 describe("test test test", () => {
-  const words = ["import", "'thing'", ";", "example"];
+  const words = ["import", "'thing'", ";"];
   const parseByGroupAndParts = ParseByGroupAndParts(words, matchRulesCodex);
 
-  parseByGroupAndParts.go();
-  console.log(parseByGroupAndParts.currentMatch);
+  // ADD loop next
+
+  const results = parseByGroupAndParts.go();
+
+  const results2 = parseByGroupAndParts.go();
+
+  const results3 = parseByGroupAndParts.go();
 
   test("should return true to indicate the string as been matched", () => {
     expect(1).toBe(1);

@@ -12,6 +12,17 @@ export type CurrentMatch = {
   terminator: string;
 };
 
+export type AllResults = {
+  ["key"]?: [];
+};
+
+export type ReturnData = {
+  allResults;
+  state;
+  wordCounter;
+  currentMatch;
+};
+
 // type Results = {
 //   [key: string]: any;
 // };
@@ -29,10 +40,9 @@ export const ParseByGroupAndParts = function (
   let wordCounter = 0;
 
   // determine end success or fail
-  let hasFailed = false;
-  let hasCompleted = false;
+  let state: "success" | "fail" | "" = "";
 
-  let currentMatch = {
+  let currentMatch: CurrentMatch = {
     groupName: "",
     partsName: "",
     str: "",
@@ -44,7 +54,14 @@ export const ParseByGroupAndParts = function (
 
   let previousMatch: CurrentMatch | {} = {};
 
-  let allResults: CurrentMatch[] = [];
+  let allResults: AllResults = {};
+
+  let returnData: ReturnData = {
+    allResults,
+    state,
+    wordCounter,
+    currentMatch,
+  };
 
   // TODO: might need for testing. remove if not. document if I remove
   // const handleCurrentMatchForProxy = {
@@ -84,10 +101,9 @@ export const ParseByGroupAndParts = function (
     ruleCounter,
     caughtSemiColon,
     wordCounter,
-
+    state,
     // determine end success or fail
-    hasFailed,
-    hasCompleted,
+
     // init: () => {
     //   // self.createResultsGroupsAndCounters(groups, resultsCounter);
     // },
@@ -100,24 +116,33 @@ export const ParseByGroupAndParts = function (
     //   }
     // },
     go: () => {
-      currentMatch = {
-        groupName: "",
-        partsName: "",
-        str: "",
-        parts: [],
-        terminator: "",
-      };
+      if (hasMatched) {
+        currentMatch = {
+          groupName: "",
+          partsName: "",
+          str: "",
+          parts: [],
+          terminator: "",
+        };
+      }
+
+      hasMatched = false;
+      caughtSemiColon = false;
 
       currentWord = words[wordCounter];
 
       // if we are out of words
       if (currentWord === undefined) {
-        hasCompleted = true;
-        return;
-      }
+        state = matchRulesCodex[ruleCounter] === undefined ? "success" : "fail";
+        returnData.state = state;
 
+        return returnData;
+      }
       // remove semi colons
-      if (currentWord[currentWord.length - 1] === ";") {
+      if (
+        currentWord[currentWord.length - 1] === ";" &&
+        currentWord.length > 1
+      ) {
         caughtSemiColon = true;
         currentWord = currentWord.slice(0, currentWord.length - 1);
       } else {
@@ -134,17 +159,14 @@ export const ParseByGroupAndParts = function (
       }
 
       currentTerminatorMatchers =
-        matchRulesCodex[ruleCounter].terminatorMatchers;
+        matchRulesCodex[ruleCounter]?.terminatorMatchers;
 
       currentMatch.parts = [...currentMatch.parts, currentWord];
-      // currentMatchProxy.str += currentWord;
+
       let str = `${currentMatch.str} ${currentWord}`;
+      currentMatch.str = str;
 
-      hasMatched = hasMatched ? true : self.checkMatch(str);
-
-      if (hasFailed) {
-        return;
-      }
+      hasMatched = hasMatched ? true : self.match(str);
 
       if (hasMatched) {
         // if there is a group being matched and it differs from the current group -> match it
@@ -152,21 +174,46 @@ export const ParseByGroupAndParts = function (
           matchRulesCodex[ruleCounter].groupName !== currentGroupName &&
           matchRulesCodex[ruleCounter].groupMatcher
         ) {
-          currentGroupName = matchRulesCodex[ruleCounter].groupName;
+          currentMatch.groupName = currentGroupName =
+            matchRulesCodex[ruleCounter].groupName;
         }
         // if we have terminators, keep them so we can remove them from next match, or add them to next match
         if (currentMatch.terminator) {
           previousMatch = currentMatch;
         }
 
+        if (allResults[currentMatch.groupName] === undefined) {
+          allResults[currentMatch.groupName] = [];
+        }
+
+        allResults[currentMatch.groupName] = [
+          ...allResults[currentMatch.groupName],
+          {
+            partsName: currentMatch.partsName,
+            str: currentMatch.str,
+            parts: currentMatch.parts,
+          },
+        ];
+
         wordCounter = wordCounter + 1;
         ruleCounter = 0;
-        hasMatched = false;
         currentWord = "";
-        caughtSemiColon = false;
       }
+      wordCounter = wordCounter + 1;
+      ruleCounter = 0;
+      currentWord = "";
+      caughtSemiColon = false;
+
+      returnData = {
+        allResults,
+        state,
+        wordCounter,
+        currentMatch,
+      };
+
+      return returnData;
     },
-    checkMatch: (str): boolean => {
+    match: (str): boolean => {
       let localMatch = self.performMatch(
         matchRulesCodex[ruleCounter]?.mainMatcher,
         str,
@@ -174,30 +221,13 @@ export const ParseByGroupAndParts = function (
       );
 
       if (localMatch) return true;
+
       ruleCounter = ruleCounter + 1;
       if (matchRulesCodex[ruleCounter] === undefined) {
-        hasFailed = true;
         return false;
       } else {
-        return self.checkMatch(str);
+        return self.match(str);
       }
-    },
-    matchTerminator: (part): boolean => {
-      if (caughtSemiColon) part = ";";
-      const terminatorMatchers =
-        matchRulesCodex[ruleCounter].terminatorMatchers;
-
-      let partMatch = false;
-      for (let index = 0; index < terminatorMatchers.length; index++) {
-        const terminator = terminatorMatchers[index];
-        if (terminator === part) {
-          currentMatch.terminator = terminator;
-          partMatch = true;
-          break;
-        }
-      }
-      currentMatch.terminator = part;
-      return partMatch;
     },
     performMatch: (matcher, val, part): boolean => {
       if (matcher && matcher[0] === "/") {
@@ -222,13 +252,28 @@ export const ParseByGroupAndParts = function (
       const strMatched = re.test(val);
 
       if (strMatched) {
-        if (currentTerminatorMatchers.length) {
-          return self.matchTerminator(part);
-        }
-        return true;
+        return currentTerminatorMatchers.length
+          ? self.matchTerminator(part)
+          : true;
       } else {
         return false;
       }
+    },
+    matchTerminator: (part): boolean => {
+      const terminatorMatchers =
+        matchRulesCodex[ruleCounter].terminatorMatchers;
+
+      let partMatch = false;
+      for (let index = 0; index < terminatorMatchers.length; index++) {
+        const terminator = terminatorMatchers[index];
+        if (terminator === part) {
+          currentMatch.terminator = terminator;
+          partMatch = true;
+          break;
+        }
+      }
+      currentMatch.terminator = part;
+      return partMatch;
     },
   };
 

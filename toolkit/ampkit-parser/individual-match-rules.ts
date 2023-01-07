@@ -31,7 +31,7 @@ export const importMatchRule: MatchRule = {
 export const importExampleRule: MatchRule = {
   name: "example",
   terminatorMatchers: [";", ...commonTerminatorsGlobal],
-  mainMatcher: "/^example/",
+  mainMatcher: "/import(\\s)'thing'(\\s);/",
   groupMatcher: true,
   groupName: "module",
 };

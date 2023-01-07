@@ -2,14 +2,16 @@
 // @ts-ignore
 // import { readFile } from "bun";
 // import { StringSplitFactory } from "./ampkit-parser/string-split";
-import { Tokens } from "./ampkit-parser/tokens";
-import { tokenList } from "./ampkit-parser/token-list";
+// import { Tokens } from "./ampkit-parser/tokens";
+// import { tokenList } from "./ampkit-parser/token-list";
 // import { tokenActions } from "./options/token-actions";
 // import { go as firstGroupingGo } from "./first-grouping";
 import { data } from "../test-content/data";
-import { ampkitDirContentsInit } from "./dir-contents";
-import { ampkitProjectWalkerInit } from "./project-walker";
-
+import { ParseByGroupAndParts } from "./ampkit-parser";
+import {
+  matchRules as matchRulesCodex,
+  type MatchRule,
+} from "./ampkit-parser/individual-match-rules";
 // test with my Vue demo project
 // const dirPath = './test-content/src/';
 
@@ -24,13 +26,22 @@ let myFilePre = data;
 // use test content instead, because of unknown error with bun readFile as import
 myFilePre = data;
 
-myFilePre = `import cat ;`;
+myFilePre = `import 'cats'`;
 
 const myFile = myFilePre.replace(/([\n\s]+)/g, " ");
 
 export const words = myFile.split(" ");
 
-export let tokens = new Tokens(tokenList);
+console.log("words");
+console.log(words);
+
+const parseByGroupAndParts = ParseByGroupAndParts(words, matchRulesCodex);
+
+const results = parseByGroupAndParts.go();
+console.log("results");
+console.log(results);
+
+// export let tokens = new Tokens(tokenList);
 
 // firstGroupingGo(words, tokens.tokensSet, tokenActions);
 
