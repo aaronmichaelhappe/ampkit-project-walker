@@ -1,4 +1,3 @@
-import { match } from "assert";
 import {
   matchRules as matchRulesCodex,
   type MatchRule,
@@ -23,27 +22,20 @@ export type ReturnData = {
   currentMatch;
 };
 
-// type Results = {
-//   [key: string]: any;
-// };
-
 export const ParseByGroupAndParts = function (
   words: string[],
   matchRulesCodex: MatchRule[]
 ) {
   // for tracking
+  let caughtSemiColon = false;
+  let complete: boolean;
   let currentGroupName = "";
   let currentWord = "";
   let hasMatched = false;
   let ruleCounter = 0;
-  let caughtSemiColon = false;
   let wordCounter = 0;
 
-  // determine end success or fail
-  // TODO, I didnt do this right. just using success current to determine when to end loop
-  // look into how to determine a fail, if at all.
-  let complete: boolean;
-
+  let allResults: AllResults = {};
   let currentMatch: CurrentMatch = {
     groupName: "",
     partsName: "",
@@ -51,13 +43,8 @@ export const ParseByGroupAndParts = function (
     parts: [],
     terminator: "",
   };
-
   let currentTerminatorMatchers = [];
-
   let previousMatch: CurrentMatch | {} = {};
-
-  let allResults: AllResults = {};
-
   let returnData: ReturnData = {
     allResults,
     complete,
@@ -243,14 +230,14 @@ export const ParseByGroupAndParts = function (
 
       if (matchRulesCodex[ruleCounter] === undefined) {
         if (words[wordCounter + 1]) return false;
-      } else {
+
         return self.match(str);
       }
     },
     performMatch: (matcher, val, part): boolean => {
-      if (matcher && matcher[0] === "/") {
+      if (matcher && matcher[0] === "/")
         return self.regExMatch(matcher, val, part);
-      }
+
       return self.simpleMatch(matcher, val, part);
     },
     simpleMatch: (matcher, val, part): boolean => {
@@ -260,9 +247,8 @@ export const ParseByGroupAndParts = function (
           return self.matchTerminator(part);
         }
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
     regExMatch: (matcher, val, part): boolean => {
       const re = new RegExp(matcher.slice(1, matcher.length - 1));
@@ -273,9 +259,8 @@ export const ParseByGroupAndParts = function (
         return currentTerminatorMatchers.length
           ? self.matchTerminator(part)
           : true;
-      } else {
-        return false;
       }
+      return false;
     },
     matchTerminator: (part, testRuleCounter?): boolean => {
       // override to test a particular rule
