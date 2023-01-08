@@ -1,12 +1,12 @@
 // bun is very new and in beta. but with a lot of promise. perfect for a side project not meant for production.
 // @ts-ignore
-// import { readFile } from "bun";
+import { readFile } from "bun";
 // import { StringSplitFactory } from "./ampkit-parser/string-split";
 // import { Tokens } from "./ampkit-parser/tokens";
 // import { tokenList } from "./ampkit-parser/token-list";
 // import { tokenActions } from "./options/token-actions";
 // import { go as firstGroupingGo } from "./first-grouping";
-import { data } from "../test-content/data";
+// import { data } from "../test-content/data";
 import { ParseByGroupAndParts } from "./ampkit-parser";
 import {
   matchRules as matchRulesCodex,
@@ -17,16 +17,17 @@ import {
 
 // test with bui
 
-const dirPath = "./test-content/bui-demo/demo/overview/";
+// const dirPath = "./test-content/bui-demo/demo/overview/";
+const dirPath = "./test-content/bui-demo/demo/";
 
 const initBase = "index.js";
 
-// let myFilePre = readFile(dirPath + initBase);
-let myFilePre = data;
+let myFilePre = readFile(dirPath + initBase);
+// let myFilePre = data;
 // use test content instead, because of unknown error with bun readFile as import
-myFilePre = data;
+// myFilePre = data;
 
-myFilePre = `import 'cats'`;
+// myFilePre = `import 'cats'`;
 
 const myFile = myFilePre.replace(/([\n\s]+)/g, " ");
 

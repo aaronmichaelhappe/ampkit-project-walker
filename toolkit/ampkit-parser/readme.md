@@ -1,0 +1,3 @@
+# Collect data as we iterate. instead of lookaheads/behinds. Keep track of a current match and previous match. and use 'terminators'. terminators can end a match --- but -- a terminator is often what starts a new match. 
+# When beginning a match, add previous matches terminator to the currrent match to begin matching. (unless the terminator is a ;)
+# Divided into group/parts. A part can be complete or not. If not, can loop back over by passing their parts back in.

@@ -2,20 +2,23 @@
 
 // if hasMatched and hasNotTerminated... starta  que
 export const commonTerminatorsGlobal = [
-  "import",
-  "let",
-  "const",
-  "var",
-  "function",
-  "if",
-  "do",
-  "while",
+  ";",
   "class",
+  "const",
+  "do",
   "export",
+  "for",
+  "function",
+  "import",
+  "if",
+  "let",
   "module",
+  "var",
+  "return",
+  "while",
 ];
 export const customTerminatorsGlobal = ["customElements.define"];
-export const commonTerminatorsClass = ["public", "private", "static"];
+export const commonTerminatorsClass = ["await", "static", "private", "public"];
 
 export type MatchRule = {
   name: string;
@@ -23,6 +26,7 @@ export type MatchRule = {
   mainMatcher: string;
   groupMatcher: boolean;
   groupName: string;
+  fullMatch: boolean;
 };
 
 export const importMatchRule: MatchRule = {
@@ -33,22 +37,33 @@ export const importMatchRule: MatchRule = {
     ...customTerminatorsGlobal,
   ],
   mainMatcher:
-    "/^import(\\s)(.+?)(\\s?)(;|import|let|const|var|customElements.define)/",
+    "/^import(\\s)(.+?)(\\s?)(;|import|let|const|var|customElements.define|.+\\..+(\\s)?\\(.*//)/",
   groupMatcher: true,
   groupName: "module",
+  fullMatch: true,
+};
+export const methodCallMatchRule: MatchRule = {
+  name: "method call",
+  terminatorMatchers: [
+    ";",
+    ...commonTerminatorsGlobal,
+    ...customTerminatorsGlobal,
+    ...commonTerminatorsClass,
+    "/^.+\\..+(\\s)?\\(.*/",
+  ],
+  mainMatcher: "/(^.+\\.)(.+)(\\(.*\\)(;)?)/",
+  groupName: "",
+  groupMatcher: false,
+  fullMatch: false,
 };
 
-export const importExampleRule: MatchRule = {
-  name: "example",
-  terminatorMatchers: [";", ...commonTerminatorsGlobal],
-  mainMatcher: '/example(\\s\\");/',
-  groupMatcher: true,
-  groupName: "module",
-};
-
-export const matchRules: MatchRule[] = [importMatchRule, importExampleRule];
+export const matchRules: MatchRule[] = [importMatchRule];
 
 export const regexes = {
   importMatchRule:
-    /^import(\s)(.+?)(\s?)(;|import|let|const|var|customElements.define)/,
+    /^import(\s)(.+?)(\s?)(;|class|const|do|export|for|function|import|if|let|module|var|return|while|customElements.define|(^.+\.)(.+)(\(.*\)))/,
+  methodCallMatchRule:
+    /(^.+\.)(.+)(\(.*\))(\s?)(;|class|const|do|export|for|function|import|if|let|module|var|return|while|customElements.define|(^.+\.)(.+)(\(.*\)))/,
 };
+
+// (\s?)(;|class|const|do|export|for|function|import|if|let|module|var|return|while|customElements.define|(^.+\.)(.+)(\(.*\)))
