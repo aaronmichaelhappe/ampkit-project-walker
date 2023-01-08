@@ -52,6 +52,14 @@ describe("Testing ParseByGroupAndParts.checkMatch", () => {
     expect(matched).toBe(true);
   });
 });
+// TODO: This test
+describe("Testing ParseByGroupAndParts TESTING WRITING THIS TEST", () => {
+  const parseByGroupAndParts = ParseByGroupAndParts(words, matchRulesCodex);
+
+  test("test test", () => {
+    expect(1).toBe(1);
+  });
+});
 
 describe("Testing ParseByGroupAndParts.go and using a while loop for multi matches", () => {
   const words = ["import", "'thing'", "import", "cat", "from", "dog", ";"];
@@ -74,3 +82,44 @@ describe("Testing ParseByGroupAndParts.go and using a while loop for multi match
     expect(Array.isArray(results.currentMatch.parts)).toBe(true);
   });
 });
+
+// describe("Testing ParseByGroupAndParts.go...", () => {
+//   const words = [
+//     "",
+//     "import",
+//     "router",
+//     "from",
+//     "'bui/router'",
+//     "router.config({",
+//     "root:",
+//     "location.hostname.match(/github|gitlab/)",
+//     "?",
+//     "'/bui/'",
+//     ":",
+//     "'/',",
+//     "prefix:",
+//     "'#/'",
+//     "})",
+//     "import",
+//     "'bui/app/error-handler'",
+//     "import",
+//     "'../elements/icon/legacy/_all'",
+//     "import",
+//     "'./markdown-docs'",
+//   ];
+//   const parseByGroupAndParts = ParseByGroupAndParts(words, matchRulesCodex);
+
+//   // ADD loop next
+//   let complete;
+//   // let counter = 0;
+//   let results;
+//   while (complete !== true) {
+//     // counter = counter + 1;
+//     results = parseByGroupAndParts.go();
+//     complete = results.complete;
+//   }
+
+//   test("should return true to indicate the string as been matched", () => {
+//     expect(results).toBe(true);
+//   });
+// });
