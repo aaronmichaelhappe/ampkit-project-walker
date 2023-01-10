@@ -7,7 +7,7 @@ import { readFile } from "bun";
 // import { tokenActions } from "./options/token-actions";
 // import { go as firstGroupingGo } from "./first-grouping";
 // import { data } from "../test-content/data";
-import { ParseByGroupAndParts } from "./ampkit-parser";
+import { ParseList } from "./ampkit-parser";
 import {
   matchRules as matchRulesCodex,
   type MatchRule,
@@ -33,7 +33,7 @@ const myFile = myFilePre.replace(/([\n\s]+)/g, " ");
 
 export const words = myFile.split(" ");
 
-const parseByGroupAndParts = ParseByGroupAndParts(words, matchRulesCodex);
+const parseByGroupAndParts = ParseList(words, matchRulesCodex);
 
 const results = parseByGroupAndParts.go();
 

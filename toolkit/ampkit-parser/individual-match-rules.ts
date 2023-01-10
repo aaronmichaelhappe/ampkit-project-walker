@@ -22,28 +22,30 @@ export const commonTerminatorsClass = ["await", "static", "private", "public"];
 
 export type MatchRule = {
   name: string;
-  terminatorMatchers: string[];
-  mainMatcher: string;
-  groupMatcher: boolean;
+  matcher: string;
   groupName: string;
-  fullMatch: boolean;
+  terminatorMatchers: string[];
+  matchGroupName: boolean;
+  isFullMatch: boolean;
 };
 
 export const importMatchRule: MatchRule = {
   name: "import",
+  groupName: "module",
+  matcher:
+    "/^import(\\s)(.+?)(\\s?)(;|import|let|const|var|customElements.define|.+\\..+(\\s)?\\(.*//)/",
   terminatorMatchers: [
     ";",
     ...commonTerminatorsGlobal,
     ...customTerminatorsGlobal,
   ],
-  mainMatcher:
-    "/^import(\\s)(.+?)(\\s?)(;|import|let|const|var|customElements.define|.+\\..+(\\s)?\\(.*//)/",
-  groupMatcher: true,
-  groupName: "module",
-  fullMatch: true,
+  matchGroupName: true,
+  isFullMatch: true,
 };
 export const methodCallMatchRule: MatchRule = {
   name: "method call",
+  groupName: "",
+  matcher: "/(^.+\\.)(.+)(\\(.*\\)(;)?)/",
   terminatorMatchers: [
     ";",
     ...commonTerminatorsGlobal,
@@ -51,10 +53,8 @@ export const methodCallMatchRule: MatchRule = {
     ...commonTerminatorsClass,
     "/^.+\\..+(\\s)?\\(.*/",
   ],
-  mainMatcher: "/(^.+\\.)(.+)(\\(.*\\)(;)?)/",
-  groupName: "",
-  groupMatcher: false,
-  fullMatch: false,
+  matchGroupName: false,
+  isFullMatch: false,
 };
 
 export const matchRules: MatchRule[] = [importMatchRule];
